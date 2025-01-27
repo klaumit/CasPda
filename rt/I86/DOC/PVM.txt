@@ -1,0 +1,66 @@
+USAGE for PocketViewer Applications Manager(PVM)
+
+1. Program explanation about buttons on that window
++------------------------------------------------------+
+| File  Execute  Config  About                         |
++------------------------------------------------------+
+| [Button(1)] [ Button(2)]      [Button(3)] [Button(4) |
++------------------------------------------------------+
+| Program List           Data List                     |
++------------------------------------------------------+
+|                      |                               |
+|                      |                               |
+| [Application program |   [ Data file list area]      |
+|   list area    ]     |                               |
+|                      |                               |
+|                      |                               |
++------------------------------------------------------+
+|                        |                             |
++------------------------------------------------------+
+
+   Button(1)   Syncronize/Fix button
+   Button(2)   Abort button
+
+   Button(3)   Add a program or a file Button
+   Button(4)   Delete a selected program or a selected file Button
+
+ If you click a right button of mouse in PV Application program or data 
+ file list area, a popup-menu is shown.  In this menu,there are three 
+ function items(Add,Delete and Download). [Add] and [Delete] items are 
+ each same function with Button(3)[Add] or Button(4)[Delete].
+ But, [Download] item is available in data list area ONLY.
+
+
+2.How to transfer PV Application programs to PocketViewer(PV)
+  At first,please connect with Cradle cable between PC and PV,
+  click PV on [MENU] icon,[MenuBar] and [Receive].
+  After that,PV enters in waiting mode for connecting to PC, you can transfering
+  programs and files. There are three following methods for it.
+
+  (1) Tranfering in Remote control mode
+      After [Execute]-[Syncronize] Menu(or Button(1)) clicked, PC and PV are 
+      syncronized informations about PV Application programs and files.
+      Then PVM enters in Remote control mode. And you can operate 
+      adding or Deleting any PV Application program files and any Data files.
+      After all operation finished, you click [Execute]-[Fix(Syncronize)] Menu
+      (or Button(1)) again, PVM executes transfering any files and deleting any
+      files if necessarily.
+
+  (2) Drag & Drop over PVM shortcut.
+      If you drop PV Application program File(*.adi,*.bin) or  Data File(*.adt)
+      over a shortcut for PV, PVM starts Quick-Connect,transfers dropped files 
+      and quits.
+
+  (3) Drag & Drop over PVM Window(not in Remote control mode)
+      If you drop PV Application Program File(*.adi,*.bin) or Data File(*.adt) over
+      Program List area or Data file list area of PVM, it starts Quick-Connect
+      and transfers dropped files.
+
+
+3.How to Backup data files
+  PV Application Programs can make any data files on PV. PVM can download and upload
+   them. At first, you make entering PVM in Remote controle mode. And  you click a 
+  right-button of mouse on a data file that you want to download, and select 
+  [Download] item of a popup-menu.
+  After that, PVM asks filename for saving datafiles(*.adt). You reply it, PVM 
+  downloads selected data file.
