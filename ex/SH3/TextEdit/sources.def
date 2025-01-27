@@ -1,0 +1,24 @@
+#########################################################################
+#	Application Independent Definations
+#########################################################################
+
+#########################################################################
+#	Application							#
+
+# use this name when a script creates *.pva,*.abs and *.dbg
+TARGET=TEXTEDIT
+
+# PV Application Title (This name is displayed on PV Menu)
+TITLE="Text Editor"
+
+# ProgramVersion(EX. 0100->Ver1.00)
+VERSION = 0100
+
+# Application Sources (src\*.c)
+
+FILE1=TEmain
+FILE2=TEedit
+FILE0=TEdata
+
+#									#
+#########################################################################

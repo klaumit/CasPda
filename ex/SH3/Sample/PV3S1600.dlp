@@ -1,0 +1,13 @@
+[DLSimProject]
+Name=PV-S1600 Simulator
+Model=..\SIM\PV-S1600.dlm
+SourcePath=.
+MemoryPath=..\SIM\MEM
+
+[Program1]
+Program=user_bin\sample.abs
+Debug=user_bin\sample.dbg
+LoadAddress=00000000:00000000
+
+[LoadInternal]
+Line0=user_bin\sample.pva
