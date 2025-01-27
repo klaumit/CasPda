@@ -1,0 +1,5 @@
+[DLSimProject]
+Name=Default project (empty)
+Model=Default.dlm
+LoadAddress=00000000:00000000
+
