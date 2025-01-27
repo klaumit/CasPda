@@ -1,0 +1,9 @@
+-cpu=sh3
+-noinline
+-define=__DEBUG__
+-optimize=0
+-debug
+-chgincpath
+-errorpath
+-lang=c
+-nologo

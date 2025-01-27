@@ -1,0 +1,56 @@
+PVOS SDK 2.0 License Agreement
+-- Important! Read these terms carefully before downloading or using this software --
+
+
+Casio Computer Co., Ltd. (hereinafter "Company") provides SDK (hereinafter "this software") for development 
+of Add-in software applicable to Pocket Viewer models: PV-S1600(hereinafter "the 
+models") on the terms and conditions below. If you do not agree to them, do not download or use this software. 
+By downloading or using this software, you agree to the terms of this agreement.
+
+
+1. CONTENTS
+This software includes 1), 2) below and relevant documents (manual for C Compiler etc.).
+1) PVOS 2.0 (Pocket Viewer OS), Emulator (Simulator)
+2) Hitachi C Compiler (C Compiler, Assembler, Linker, Library)
+
+2. INTELLECTUAL PROPERTY RIGHTS
+Company reserves copyright and all other rights concerning 1.1) supra.
+HITACHI, Ltd., (hereinafter "Supplier") reserves copyright and all other rights concerning 1.2) supra.
+
+3. LICENSE GRANT
+Subject to the terms and conditions herein, Company grants to you a non-exclusive, non-transferable, 
+royalty-free license to use this software, and Supplier agrees to that.
+1) This software may be used for the sole purpose of developing Add-in software for the models.
+2) This software is provided "as is" without any express or implied warranty of any kind including, without 
+limitation, warranties of merchantability, non-infringement or fitness for any particular purpose.
+3) You may not decompile, reverse engineer or disassemble this software.
+4) You may not make any modification or alteration to this software.
+5) You are liable for all risks in relation to the quality or performance of this software.
+6) In case any defect of this software is found, any expense derived from this is due to you.
+7) You may not distribute this software to any third party, in any case, except Library, 1.2) supra. Library may 
+be distributed only as Add-in software "built-in".
+8) You may not disclose any information acquired by using this software for any reason.
+
+4. SUPPORT AND WARRANY
+1) Company or Supplier shall not give any support or warranty for this software.
+2) Any question against this software shall not be accepted.
+3) Company may revise the contents of this software at any time without notice.
+
+
+5. LIABILITY
+In no event shall Company or Supplier be liable for any damages whatsoever caused to you or the third party 
+arising out of the use or inability to use this software. Damages include general damages, special damages, 
+accidental damages or consequential damages (including, without limitation, loss of data or accuracy or 
+unfitting interface for other programs).
+
+6. DISTRIBUTION OF ADD-IN SOFTWARE
+You or the third party may distribute Add-in software, regardless of its value (at any price or free), without any 
+prior authorization or notice. However, do not make any statement that Add-in software is "certified", or that its 
+performance is guaranteed, by Company, or any similar display.
+
+7. APPLICABLE LAWS
+This agreement is governed by Japanese laws.
+
+
+c 2002 Casio Computer Co., Ltd.
+

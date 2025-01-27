@@ -1,0 +1,6 @@
+-cpu=sh3
+-noinline
+-chgincpath
+-errorpath
+-lang=c
+-nologo
