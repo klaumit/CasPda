@@ -1,0 +1,130 @@
+<< Before You Begin >>
+
+ 1) This SDK (Software Development Kit) applies to CASIO Pocket Viewer only, no other 
+   models are supported.
+ 
+ 2) System Requirements
+   OS:		Windows 95/98/Me or Windows NT4.0 (Service Pack 3 or later)
+   CPU:		A Pentium 200MHz or later processor
+   Memory:	At least 64 MB (RAM) of available memory
+   Hard disk: 	At least 30 MB of available hard disk space
+   Monitor:	A VGA monitor or higher
+ 
+ 3) The compiler LSIC86 from LSI Japan Corporation must be installed in the system properly 
+   as well as this SDK to develop applications. Note that the SDK does not include the 
+   compiler LSIC86.
+
+ 4) It is prohibited to make a copy or redistribute any part of this SDK, except that you may 
+   make one copy of the software solely for backup.
+
+ 5) In no event shall CASIO (CASIO Computer Co., Ltd.) be liable for any damages 
+   whatsoever arising out of the use or inability to use the SDK software.
+
+ 6) The contents of this Software Development Kit can be changed without notice to improve it.
+
+ 7) Windows and Windows NT are registered trademarks of Microsoft Corporation.
+
+ 8) LSIC is a registered trademark of LSI Japan Corporation.
+
+ 9) Pentium is a registered trademark of Intel Corporation.
+
+10) Other unspecified names in this SDK such as CPU, device and product names are either 
+   registered trademarks or trademarks of respective developers.
+
+
+$1. Directory Structures
+
+1. Directory overview
+
+C:\CASIO\
+<PV2xxx>	('xxx' is model name of SDK)
+ |
+ +-----<C>    For respective C programs.
+ |	+------<BIN>	<Binary files for simulator>
+ |	+------<COM_H>	<Common header definition files>
+ |	|	DEFINE.H	Common header
+ |	|	LIBC.H		Library header
+ |	|
+ |	+------<COM_LNK>	<Common link information files>
+ |	|	MakeSDK.1 	Include makefile1
+ |	|	MakeSDK.2 	Include makefile2
+ |	|	LINK2S.DAT	Link information 2 (For "s" model)
+ |	|	LINK2P.DAT	Link information 2 (For "p" model)
+ |	|
+ |	+------<COM_LIB>	<PV library>
+ |	|	+-------<H>	Library common header
+ |	|	+-------<S>	Library for "S" model
+ |	|	+-------<P>	Library for "P" model
+ |	|
+ |	+------<COM_OBJ>	<Common objects>
+ |	|	+-------<S>	Common OBJ for "S" model
+ |	|	+-------<P>	Common OBJ for "P" model
+ |	|
+ |	+------<USER_BIN>	<Binary file of User program>
+ |	+------<SAMPLE>		<Sample Program>
+ | 
+ +-----<DOC>	<Document files>
+ |	PVM.TXT			The operation manual of  "PVM.EXE".
+ |	CharCode.PDF		The character code table of "PV".
+ |	C_Prog_Rule.TXT		C programming rule for "PV".
+ |	DevOutline.TXT		The development outline.
+ |	Event_Doc.PDF		The document of Touch event procedure.
+ |	Lib_Func_char.PDF	The document of  character inputting library.
+ |	Lib_Func_List.PDF	The list of library function.
+ |	Lib_Function.PDF	The document of library function
+ |	Message.TXT		The table of the message which is had by "PV".
+ |	Sim3022_E.PDF		The operation manual of  "Sim3022.EXE".
+ |
+ +------<SIM>	<PV simulator>
+ |	Sim3022.EXE		Simulator program
+ |	PVxxx.CPJ		Project file for simulator.("xxx" is model name of PV.)
+ |
+ +------<BIOS>	<PV BIOS files>
+ |
+ +------<TOOL>	<Tools>
+ |	 PVM.EXE		The program which controls a download to PV
+ |
+ :
+
+
+1) The directories for the respective modes are placed under the "C" directory. Thus the 
+  compilation and link operation can be complete in each directory.
+
+2) The directory structure for each mode is described below.  You can create the HEX files 
+  for the compiling, linking and updating operation by executing "MK.BAT" available for 
+  each mode.
+
+<SAMPLE>
+ |MK.BAT	A batch file for compiling or linking.
+ |MAKEFILE	Information file for Make command.
+ |ForDEBUG.MAP	Map files (Symbol files for the simulator.)
+ |
+ +------<C>		C source file group
+ +------<H>		Header file group
+ +------<MENUICON>	Icon graphics for menu
+ +------<ForDEBUG>	Compiling objects for the simulator
+ +------<OBJ>		Compiling objects
+
+
+3) The settings of "LINK2S.DAT" and "LINK2P.DAT" located in the directory "COM_LNK" 
+  expect that the installation directory of LSIC86 is "C:\LSIJ\LSIC86pv".
+
+4) The settings of PV simulator project expect that the installation directory path of this 
+  environment is "C:\CASIO\PV2xxx".
+
+5) If the installation directory path for this environment is not "C:\CASIO\PV2xxx", and LSIC86 
+  is not installed in "C:\LSIJ\LSIC86pv", you need to update following files:
+
+  'xxx' is model name of SDK.
+
+ 	<CASIO\PV2xxx>
+ 		PATHSET.BAT
+ 		<C\COM_LNK>
+ 			LINK2S.DAT
+ 			LINK2P.DAT
+ 		<SIM>
+ 			PVxxx.CPJ
+ 	<LSIJ\LSIC86pv>
+ 		<BIN>
+ 			_LCC86
+
