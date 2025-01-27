@@ -1,0 +1,42 @@
+Pocket Viewer ( PV-750/450X ) Software Development Kit
+
+(1) Hardware.(PV750/450X)
+	CPU	:V30MZ( NEC:80186 compatible ) core CASIO original CPU.
+        	 	Clock 20MHz
+	MEMORY	:FLASH 32M( OS & Application and User data ).
+			16M( User data ).
+		 S-RAM 1M ( work ).
+	D/D	:CASIO original.
+	LCD	:160 x 160 Full dots with EL Back light.
+	SIU	:16550 compatible.( Max 38.4kbps )
+	H8	:IrDA control(TCPIP,PPP) HITACHI co.
+	Touch Panel controler.
+	RTC.
+
+(2) Software.
+	FLASH	:OS & Application	1MB
+	         Add in software	1MB
+	         User data		2/4MB
+	OS 	:CASIO original.( Application uses only library )
+	Program size	: Max 128kB.
+	RAM size	: Max 32kB.
+
+(3) Tool
+	Compiler	: LSI-C86 PV version ( LSI JAPAN co. )
+		 	(include C compiler, Assembler, Linker )
+	PC simulator	: CASIO original.
+	  System Requirements
+		OS		Windows 95/98 or Windows NT4.0 (Service Pack 3 or later)
+		CPU		A Pentium 200MHz or later processor
+		Memory		At least 64 MB (RAM) of available memory
+		Hard disk	At least 30 MB of available hard disk space
+		Monitor		A VGA monitor or higher
+
+(4) Documents
+	 C program rule.
+	 Library Function Manual.
+	 Event Control Manual.
+	 Flash Bios Manual.
+	 LSI C86 Manual.
+	 Simulator Manual.
+	 Memory MAP.
