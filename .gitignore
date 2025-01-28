@@ -399,3 +399,13 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Pocket
+ForDEBUG/
+ForDebug.*
+Licon.BIN
+Licon.HEX
+icon.BIN
+icon.HEX
+OBJ/
+err
+user_bin/
