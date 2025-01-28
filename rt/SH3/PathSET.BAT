@@ -1,1 +1,1 @@
-SET PATH=c:\casio\pv3s1600\TOOLS;c:\pvshcom\shc\bin
+SET PATH=Y:\rt\SH3\TOOLS;Y:\cc\pvshcom\bin

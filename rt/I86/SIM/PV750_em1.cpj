@@ -1,7 +1,7 @@
 [GENERAL]
 ProjectName=PocketViewer
-CurrentDir=C:\CASIO\PV2EM01\
-SourceDir=C:\CASIO\PV2EM01\C\SAMPLE1\
+CurrentDir=Y:\rt\I86\
+SourceDir=Y:\ex\I86\SAMPLE1\
 KeyConfig=SIM\keycfg.ini
 DispConfig=SIM\ddconfig.ini
 TOOLBAR1POS=0
