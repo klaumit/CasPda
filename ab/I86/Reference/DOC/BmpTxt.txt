@@ -1,0 +1,45 @@
+< BmpTxt.EXE >
+
+The way of making the graphic data which used "BmpTxt.EXE"
+
+1. Prepare a monochrome binary BMP file.(For example, TEST.BMP) 
+
+2. Execute "BmpTxt.EXE" found in the <Tools> folder.
+
+3. Operating "BmpTxt.EXE" 
+ 1) Read in the BMP file with [File] and [InputBitmapFile].
+ 2) Pressing the [View] button displays the read BMP file. 
+ 3) Pressing the [ConvStart] button to create the file converted to the C-source code. 
+ 4) If "Complete" is displayed, it indicates that conversion has been successfully done.(TEST.BMT has been created)
+
+4. Open the BMT file with the editor and make sure that it looks like the following.  
+   GSIZE(160, 160) refers to the length and width of the screen in dots.
+	GSIZE(160,160),
+	0x55, 0x55, ...
+	0x55, 0x55, ...
+	:     :
+	0x55, 0x55, ...
+	The actual data depends on BMP at the conversion source. "..." and ":" mean that the same data continue. 
+
+   If this format is not satisfied, execute "BmpTxt.EXE" again to do the following:
+      1) Click [Option] and [SaveCfg] to open the output format setting window. 
+      2) With [Use Language] in this window, select [C Lang]. 
+   If the screen is displayed in reverse video on the PV, set [Bit Reverse] in reverse.
+
+5.It changes the description of the BMT file by the following procedure and it adds it to the data base.
+
+  	Step1.
+		GSIZE(160,160),						160,160,
+		0x55, 0x55, ...		Delete "GSIZE(" and ")"		0x55, 0x55, ...
+		0x55, 0x55, ...		------------------>		0x55, 0x55, ...
+		:     :							:	:
+		0x55, 0x55, ...						0x55, 0x55, ...
+
+	Step2.
+
+		160,160,						G0000{ 160,160,
+		0x55, 0x55, ...		Define graphics			0x55, 0x55, ...
+		0x55, 0x55, ...		------------------>		0x55, 0x55, ...
+		:	:						:	:
+		0x55, 0x55, ...						0x55, 0x55, ... }
+

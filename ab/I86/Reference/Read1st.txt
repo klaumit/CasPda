@@ -1,0 +1,370 @@
+<< Referencer >>
+
+  1)It is prohibited to reproduce and re-distribute all the files included in this development kit without permission, except for the purpose of backing up.
+
+  2)Casio Co., Ltd. will not assume any liability for any kind of damages incurred by use of this development kit.
+
+  3)The contents of this development kit may be changed without prior notice for improvement.
+
+  4)Windows and WindowsNT are registered trademarks of Microsoft Corporation.
+
+  5)LSIC is a registered trademark of LSI JAPAN Corporation.
+
+  6)Pentium is a registered trademark of Intel Corporation.
+
+  7)The names of CPU, devices, products and others used in this development kit, whether they are specifically mentioned or not, are registered trademarks or trademarks of their respective owners.
+
+
+$1. Outline
+
+This kit offers tools and sample add-ins to refer to a large database by add-ins in PV-250X/450X, PV-S250/S450, and PV-750/750Plus.
+
+   * Database creating support tool
+   * Sample database and referencing add-in software for samples
+   * Format of database
+
+  1)Maximum Capacity of Database
+
+	Database is used by registering it to user data area, it is possible to use the database up to the maximum capacity of the user area.
+	However, since the database co-exits with the user data, it is recommended to make the maximum database capacity be about 1MB.
+
+	PV-250X/750/S250		Approx. 1.5MB of user data area
+	PV-450X/S450		Approx. 3.4MB of user data area
+ 	Recommended maximum capacity of database	Approx. 1MB
+
+Å@2)Outline of Procedure for Creation
+
+	Prepare a text file in accordance with the format (DataFormatV100.TXT) for database.
+		|	To create a database newly, use this database format.
+		|	If you already have a database with different format, it is necessary to
+		|	create software to convert that format to this database format. 
+		|	(Refer to $ 6.)
+		|
+	Convert a text file to the format to be read by PV by using the database conversion tool (MKDB.EXE).
+	At this time, an index table for each header is added to the end of the converted file.
+		|
+	Transfer the converted file to PV by using the database transfer tool (PVSENDER.EXE, datarec.bin).
+		|
+	Create a backup of the database by using PVM.
+		|
+	Register the referencing add-in software for samples to PV and confirm the database.
+
+	Step1.
+		   PC
+		+-------+	MKDB.EXE	+-------+
+		|  .TXT	|	-------->	|  .DIC	|
+		+-------+			+-------+
+	Step2.
+		   PC						   PV
+		+---------------+	PVM.EXE			+-------+
+		|datarec.bin	|	-------->		|	|
+		+---------------+				|-------|
+								+-------+
+
+		   PC						       PV
+		+-------+		PVSENDER.EXE		+---------------+
+		|  .DIC	|		-------->		|Data-Recorder	|
+		+-------+					|---------------|
+								+---------------+
+	Step3.
+		   PC						   PV
+		+-------+		PVM.EXE			+-------+
+		|  .ADT	|		<-------		|	|
+		+-------+					|-------|
+								+-------+
+	=========================================================================================
+	Step4.	Operation of user
+		   PC						   PV
+		+---------------+	PVM.EXE			+-------+
+		|Referencer.bin	|	-------->		|	|
+		+---------------+				|-------|
+		|  .ADT		|				+-------+
+		+---------------+
+
+
+  3)Required System and Software
+	* PVSDK (for PV-250X/450X, PV-S250/S450, PV-750/750Plus)
+	* PVM (packaged in this development kit)
+	* PC synchronization software (packaged in PV)
+	* PV main unit and the synchronization cable (a cradle packaged in PV)
+	* PC
+		OS:  Windows95/98/NT4.0(SP3 or later)/2000
+		CPU: Pentium 200MHz or faster
+		RAM: 64MB or more
+
+
+$2. Outline of Development Tools
+  1) Database Creation Support Tool
+
+	<Tools on PC side>
+	* Database conversion tool for PV (MKDB.EXE)
+		This tool enables PV to read the database of different formats and at the same time it creates an index table for each header.
+
+	* Database transfer tool for PV (PVSENDER.EXE)
+		This tool automatically divides the database and transfers to PV.
+
+	* Backup converter tool for Simulator (BKPC.EXE)
+		This tool converts the data backed up on PC side by backup communication of PCSync software to those usable by the simulator (SIM3022.EXE).
+
+	<Tools on PV side>
+	* Database receiver (datarec.bin)
+		This tool registers the database transferred from PC to the user area.
+		The file name can be arbitrarily specified in 15 alphanumeric characters. (The file names are specified by the PC.)
+
+  2) Sample Database
+	* Sample database (SDK_Lib.ADT)
+		This is "Library Manual" offered in SDK for PV made into a database.
+
+	* Referencing add-in software for samples (Referencer.bin)
+		This is add-in software for PV to refer to the database created in accordance with the format for sample definition.
+
+	* Sample format for database (DataFormatV100.TXT)
+		This is a database format and its explanation offered in the sample.
+		Only the database conforming to this format can be refereed to by "Referencer".
+
+
+  3) Outline of Referencing Add-in Software for Samples (Referencer)
+
+	* Displays a list of headers and the contents (data) of the headers.  
+
+	* Searching the headers. (If the words do not match the search keyword, the header closest in the sorting order is displayed.)
+
+	* Displays the graphics embedded in the statement (max. 160 x 160 dots).
+
+	* Displays the contents of the linked destination by a touch of the linked string.
+
+
+$3. Notes
+
+  1) Limitation on the size of the database
+	* The upper limit depends on the volume of registered user data.
+	* It is necessary to reorganize the memory before putting the database into PV.
+
+  2) Notes on formatting
+	* Make sure that the database format is in accordance with the one in "DataFormatV100.TXT".
+	  If your database is not in accordance with this format, it is necessary to create new add-in software.
+	  In that case, note the followings:
+		Be sure to include a judgement process to distinguish from other database.
+		  To be recognized as the database for the add-in software to be created, identification information should be included in the database.
+		Create the database with divided registration in mind.
+		  It is necessary to consider the structure of the database for the dividing unit.
+
+  3) Note on database-creating tool
+	* This tool does not compress the database.
+
+  4) Referencing add-in software for samples (Referencer)
+	* This software deals with only the data converted from the TEXT file in accordance with the format provided by using the dedicated database-creating tool and registered to PV by the dedicated transfer tool.
+	* This software offers no general-purpose interface nor search engine. 
+
+
+$4. Directory Structure
+
+	C:\CASIO\
+	<Referencer>
+	|DataFormatV100.TXT	Sample data format for Referencer
+	|Referencer.bin		Add-in software for samples (Referencer)
+	|Read1st.txt		This file
+	|
+	+------	<DataBase>
+	|	|
+	|	+------	<Sample1>
+	|	|	|ES_Conversation.ADT	Database for PV (Use PVM.EXE)
+	|	|	|ES_Conversation.DIC	Database for PV converted by MKDB.EXE (Use PVSENDER.EXE and DATAREC.BIN)
+	|	|	|ES_Conversation.LOG	Resulting log when converted by MKDB.EXE
+	|	|	|ES_Conversation.TXT	Original text of the database before converted by MKDB.EXE (Use MKDB.EXE)
+	|	|	+
+	|	|
+	|	+------	<Sample2>
+	|		|SDK_Lib.ADT	Database for PV (Use PVM.EXE)
+	|		|SDK_Lib.DIC	Database for PV converted by MKDB.EXE (Use PVSENDER.EXE and DATAREC.BIN)
+	|		|SDK_Lib.LOG	Resulting log when converted by MKDB.EXE
+	|		|SDK_Lib.TXT	Original text of the database before converted by MKDB.EXE (Use MKDB.EXE)
+	|		+
+	|
+	+------	<Tools>
+	|	|PVM.exe	PV Applications Manager
+	|	|MKDB.exe	Making PV data base
+	|	|datarec.bin	Add-in software to receive and register the database for PV (.DIC) (for PVSENDER.EXE)
+	|	|PVSENDER.exe	Software to transfer the database for PV (.DIC) to PV
+	|	|PVSCFG.ini	Configuration file for PVSENDER.EXE
+	|	|BmpTxt.EXE	Tool to Convert BMP File to TEXT file
+	|	|
+	|	+------	<ForDEV>(not used in Referencer)
+	|		|PVS_dev.exe	PVSENDER for new development
+	|		|PVSCFG.ini	Configuration file
+	|		|PVS_dev.PDF	Manual for PVS_dev.EXE
+	|		|BKPC.exe	Software to convert the synchronized backup file (.BKP) for use by the simulator
+	|		|BKPCFG.ini	Configuration file for BKPC.EXE
+	|		|BKPC.pdf	Manual for BKPC.EXE
+	|		+
+	|
+	+------	<DOC>
+	|	|BmpTxt.txt	Manual for BmpTxt.EXE
+	|	|MKDB.txt	Manual for MKDB.EXE
+	|	|PVM_EN.pdf	Manual for PVM.EXE
+	|	|PVSENDER.pdf	Manual for PVSENDER.EXE
+	|	|CharCode.pdf	Table of PV character code
+	|	+
+	|
+	+------	<RefSource>	Referencer C Source file group(for the sample of the new add-in software development)
+		|MK.BAT		A batch file for compiling or linking.
+		|MAKEFILE	Information file for Make command.
+		+------	<C>		C source file group
+		+------	<H>		Header file group
+		+------	<OBJ>		Compiling objects
+		+------	<ForDEBUG>	Compiling objects for simulator
+		+------	<MENUICON>	Menu icon data
+
+$5. Procedure for Creating Database
+
+This section describes the procedure for creating the database by using "Sample" as an example.
+Refer to each manual in the <DOC> folder for details on each tool.
+
+
+ 1) Prepare a text file in accordance with the format for the database.
+	The text file to be prepared here should be created by following the rules described in 
+ "DataFormatV100.TXT".
+	To create a file, use a text editor and other software.
+
+	In "Sample2", you will find the file "SDK_Lib.TXT". 
+
+ 2) Convert the file to the format usable by the add-in software Referencer.
+ 	To convert, start "MKDB.EXE" and select the file prepared in the step 1).
+	In the file after conversion, the name of the file will be the original file name with ".DIC" extension.
+	If an error occurs during conversion, information is output to a log file with the original file name plus ".LOG" extension.
+	When an error occurs, check the contents of the file "DataFormatV100.TXT" and modify the text file.
+
+	In "Sample2", 
+		"SDK_Lib.DIC" is created from "SDK_Lib.TXT" by using "MKDB.EXE".
+		The file "SDK_Lib.LOG" has an output "COMPLETE!!" which means normal completion.
+
+ 3) Transfer the converted file to PV.
+	Connect PV with PC by using the cradle cable.
+ 	Register the add-in software "datarec.bin" to PV by using "PVM.EXE".
+	Start "PVSENDER.EXE" and select ".DIC" files.
+	In "REGISTRATION FILE NAME" of "PVSENDER", specify the file name of the database on PV.
+	Click "SEND" of "PVSENDER"ÇÃ"SEND" to display the message window for confirmation.
+	Click [OK] to let the software wait for transfer.
+	Tap the icon for "Data-Recorder" displayed in the menu of PV and start it.
+	Transfer starts.
+
+	In "Sample2",
+		Start "PVSENDER.EXE" and select "SDK_Lib.DIC".
+		In "REGISTRATION FILE NAME", "DbSdkLib0100en" is already shown.
+		Transfer as it is.
+
+ 4) Perform backup of the database by using "PVM"
+	Perform backup the database registered to PV by using "PVM.EXE".
+	Click [Excute]-[Import form PV] of "PVM".
+	Tap [Menu][MenuBar] of "PVM" and select [Download].
+	After a while, the file name of the database specified by "PVSENDER" within "Data List" on "PVM". 
+	Select that database, click the right mouse button, and then click [Backup].
+	Specify the folder to be stored with the file name and click [OK]. Backup of the data starts.
+	The extension of the file name is ".ADT" by default. Use the default extension when saving.
+
+	In "Sample2",
+		In "Data List" of "PVM", "DbSdkLib0100en" is displayed.
+		The file name after backup is "SDK_Lib.ADT".
+
+	<IMPORTANT>
+	By using the file (.ADT) backed up here, registration of the database to "PV" can be done only by "PVM.EXE".
+
+ 5) Register the add-in software "Referencer" to PV.
+	By using "PVM.EXE", register "Referencer.BIN" to PV.
+	After registration, refer to the database by starting "Referencer" from the menu screen of PV.
+
+	<CAUTION>
+	The name of the database displayed in "Referencer" is the one set by "@\DN" in the text file.
+
+	In "Sample", "SDK LibDoc" is displayed when "Referencer" is started.
+
+ 6) Confirm the database.
+ 	By using "Referencer", check if the contents of the created database is correct or not.
+	If any error is found, correct the mistakes in the text file and start from the step 2).
+
+
+$6. About Development of New add-in Software (PV Application)
+
+The database which is not in accordance with "DataFormatV100.TXT" cannot be used in  "Referencer".
+If you prefer to create a database in a different format, it is necessary to develop new add-in software.
+In this case, some tools provided in this development kit cannot be used.
+
+	(To debug the add-in software)
+	Perform backup of the user data by using PCSync.
+		|
+	Convert the above backup file to the format to be read by a simulator by using the backup converter (BPKC.EXE).
+		|
+	Read the above file to the simulator (SIM3022.EXE) and perform debugging.
+
+ 1) Software which cannot be used to develop new add-in software
+	PC-side software: MKDB.EXE,PVSENDER.EXE
+	PV Application software:  Referencer.bin
+
+ 2) Software which can be used to develop new add-in software
+	PC-side software: PVS_dev.EXE,BKPC.EXE,PVM.EXE
+	PV Application software: datarec.bin
+
+ 3) Notes on developing new software
+
+	* About division of files
+		In order for the files on PC to be used in PV, it is necessary to divide the file into the data unit for PV.
+		The tool to divide the file automatically and to transfer it to PV is "PVS_dev.EXE".
+		(Up to 30KB with 1KB increment can be specified as the division unit for  "PVS_dev.EXE".)
+		In addition, the add-in software which registers the data transferred by "PVS_dev.EXE" is "datarec.bin".)
+
+		When creating new add-in software, consider referencing the database by this division unit.
+		In addition, it is necessary to create the database with access of the data by this division unit in mind.
+		Further, it is necessary to determine the division unit with the RAM area of PV used for the add-in software.
+		For the RAM area used for the add-in software, refer to "MEMMAP.TXT" provided with SDK.
+		(ReferenceÅF The division unit in "Referencer" is 10KB.)
+
+	* Treatment of database
+		In PV, there are data for other add-in software also.
+		Create the database so that the data for it and the one for the newly-developed add-in database are distinguishable.
+
+	* Debugging with the simulator
+		3-1) By using PVM.EXE, register "datarec.bin" to PV.
+		3-2) Register the database created by using "PVS_dev.EXE" and "datarec.bin" (Data-Recorder).
+		3-3) Back up the PV's data on PC by backup communication of PCSync software. (.BKP file is created.)
+		3-4) By using "BKPC.EXE", convert the backed-up file (.BKP) to the format to be used in the simulator.
+		3-5) Read the add-in software developed and the file converted in the step 3-4) into the simulator (SIM3022.EXE).
+		3-6) Debug the add-in software on the simulator.
+
+	* About difference between "PVS_dev.EXE" and "PVSENDER.EXE"
+		Since the newly-developed add-in software has the structure which is dependent on the division unit of the file, it is necessary to avoid modification of the division unit when distributing to users who create only the database.
+		Therefore, "PVSENDER.EXE" is used to fix the division unit to the value described in the configuration file.
+		If the configuration file "PVSCFG.INI" for "PVS_dev.EXE" is copied under the same directory as "PVSENDER.EXE", the same configuration used in "PVS_dev.EXE" applies at the next startup of "PVSENDER.EXE".
+		Note: This operation disables "Referencer".
+
+
+	 * Copy from "RefSource" directory to "PVSDK"
+		Please use the Referencer C Source file group as a sample of new add-in software development.  
+
+		Step1.
+			ReferencerToolsDirectory			PV SDK Directory
+			<CASIO>						<CASIO>
+			|						|
+			+------	<Referencer>				+------	<PV2EN01> or <PV2EN02>
+			 	|						|
+			 	|						+------	<C>
+			 	|			COPY				|
+			 	+------	<RefSource>	-------->			<Referencer>	Make New Directory
+
+		Step2.
+
+			PV SDK Directory
+			<CASIO>
+			|
+			+------	<PV2EN01> or <PV2EN02>
+				|
+				+------	<C>
+					|
+					<Referencer>
+						|MK.BAT		A batch file for compiling or linking.
+						|Makefile	Information file for Make command.
+						+------	<C>		C source file group
+						+------	<H>		Header file group
+						+------	<OBJ>		Compiling objects
+						+------	<ForDEBUG>	Compiling objects for simulator
+						+------	<MENUICON>	Menu icon data
+

@@ -1,0 +1,338 @@
+<Format of TEXT Data>							Ver. 1.00
+	ÅEThe TEXT data defined here is generated as the database by using the lexicalization tool.
+	ÅEIn the lexicalization tool, the entry word is sorted by code. (However, alphabetical order applies to A-Z and a-z.)
+	ÅEOne unit of data (from @\TTITLE to @\T) shall be 10KB maximum.
+	ÅEOne unit of line shall be 9 dots vertically (including 1 dot of inter-line space). (That is, the scrolling unit shall be 9 dots vertically.)
+	ÅE@\x, @\g, @\f, and @\l(lower-case "L") can be used in the statement.
+	ÅEThe object of search shall be @\TTITLE only.
+
+$1.Database Name and Version
+	1) The character length of the database name is up to 15 characters.
+	2) The characters usable for the database name are in the range of 20h-7Fh, 80h-E8h, and F0h-F7h.
+	3) Only @\x can be specified within the string of the database name.
+	4) Be sure to specify the database name and version at the beginning of the file (only once).
+	5) The version can specify only a 4 digit figure.
+	6) In the end of the "@\DN" definition, the line feed is always necessary.
+	7) In the end of the "@\DV" definition, the line feed is always necessary.
+
+	@\DNname+CRLF		Database name
+	@\DVversion+CRLF	Database version
+
+
+$2.Headers
+	1) The length of TITLE is up to 64 characters (excluding @\f specification).
+	2) The following characters cannot be used: '*', '?', 00h-1Fh, E8h-EFh, F8h-FFh.
+	3) Only @\x and @\f can be specified in the string of TITLE.
+	4) In the end of the "@\T" definition, the line feed is always necessary.
+
+	@\TTITLE+CRLF	Entry word (to be an object for search)
+			The string from @\T to the line break is regarded as one string of TITLE.
+
+	End of main body 	The next "@\TTITLE" and "@\LLinkTITLE" is regarded as end.
+
+$3.Main Body of Text
+	1) The main body is the range from @\TTITLE to @\T.
+	2) Various specifications beginning with @\ is possible within the main body.
+	3) The strings in the main body are not the object of search.
+	4) In the end of the "@\C" definition, the line feed is always necessary.
+
+	Main body		TEXT data (from 20h to 7Fh)
+			where TAB, CR, and CR+LF in the text is processed as it is.
+			TAB is converted to SPC. CR+LF is converted to CR.
+
+	@\x??		Single-byte code (this is used to represent the character codes over 80h)
+			Codes below 0Fh cannot be specified.
+		??= 2-digit HEX 
+
+	@\CCROSSHEAD+CRLF	Sub-header (not the object of search)
+			The length of CROSSHEAD is up to 64 characters (excluding @\f specification).
+			The following characters cannot be used: '*', '?', 00h-1Fh, E8h-EFh, F8h-FFh.
+			Only @\x and @\f can be specified in the string of CROSSHEAD.
+			The string from @\C to the line break is regarded as one string of CROSSHEAD.
+
+
+$4.Graphic Specification
+	1) This is used to embed the graphics in the main body.
+	2) @\g and @\G has different defining function. Be careful of the case-sensitivity!
+	3) Graphics is up to 160 dots of X size and 160 dots of Y size.
+	4) In the end of the "@\G{}" definition, the line feed is always necessary.
+
+	@\g????		Graphic code
+			The position specified by this is the plotting start position of the graphics. The part drawing outside the screen is not displayed.
+
+	@\G????{Xsize,Ysize,0x?? , 0x?? , ..}+CRLF	Graphic data
+			This defines the body of the graphics which is the code of @\g????.
+			In the strings enclosed with "{" and "}", SPACE, CR+LF, CR, and TAB are regarded as WhiteSpace.
+
+		????= 4-digit HEX, ??= 2-digit HEX, Xsize=1-160(in decimal notation), Ysize=1-160(in decimal notation)
+
+$5.Font Specification
+	1) This specifies the font for display.
+	2) The font specification beginning with @\f is valid until the font is newly specified.
+
+	@\fPB		Specifies proportional boldface font
+	@\fPN		Specifies proportional normal font
+	@\fNM		Specifies normal (5*7) font
+
+$6.Link Specification
+	1) The length of LinkTITLE is up to 64 characters (excluding @\f specification).
+	2) @\l and @\L has different defining function. Be careful of the case-sensitivity!
+	3) The following characters cannot be used: '*', '?', 00h-1Fh, E8h-EFh, F8h-FFh.
+	4) Only @\x and @\f can be specified in the string of LinkTITLE.
+	5) LinkTITLE is not the object of search by the regular character input.
+	6) If '[' or ']' is included in LinkTITLE, use '@\[' or '@\]'.
+	7) @\T and @\L must not be included between @\L[LinkTITLE] and the following @\L.
+	8) @\l and @\j must not be included between @\L[LinkTITLE] and the following @\L. (Prohibition of nesting links)
+	9) The string between @\L[LinkTITLE] and the following @\L is regarded as the data for link extracted from the main body of text.
+	10) In the line with @\L[LinkTITLE], the portion after ']' to the line break is ignored.
+	11) In the end of the "@\L" definition, the line feed is always necessary.
+
+
+	@\l[LinkTITLE]	The string within [ ] is displayed on screen and if tapped, the contents of the link destination is displayed.
+
+	@\L[LinkTITLE]+CRLF	Instructs the start of main body of the original link.
+	End of link body 	The next "@\TTITLE" and "@\LLinkTITLE" is regarded as end.
+
+$7.Jump Specification
+	1) TITLE must be defined as a header.
+	2) The following characters cannot be used: '*', '?', 00h-1Fh, E8h-EFh, F8h-FFh.
+	3) Only @\x and @\f can be specified in the string of TITLE.
+	4) If '[' or ']' is included in TITLE, use '@\[' or '@\]'.
+
+	@\j[TITLE]	The string within [ ] is displayed and if tapped, the cursor jumps to the header of TITLE.
+
+$8.Example of Definition
+
+	Example of Definition File
+		+---------------------------------------+
+		|@\TLibAdjustTimeDeff2			|	<-TITLE
+		|@\CSyntax				|	<-CROSSHEAD
+		|#include "define.h"			|
+		|#include "libc.h"			|
+		|#include "l_define.h"			|
+		|#include "l_libc.h"			|
+		|void LibAdjustTimeDeff2(		|
+		| int lag,				|
+		| word *year2,				|
+		|					|
+		:		:			:
+		:		:			:
+		|@\TLibAlarm				|	---
+		|@\CSyntax				|	 |
+		|#include "define.h"			|	 |
+		|#include "libc.h"			|	 |
+		|void LibAlarm( void )			|	 |
+		|@\CArguments				|	 |
+		|None					|	 |
+		|@\CReturn values			|	 |
+		|None					|	 |
+		|@\CDescription				|	 |
+		|Calls the alarm match processing.	|	 |
+		|@\TLibAlarmBuzzSet			|	---
+		|@\CSyntax				|
+		|#include "define.h"			|
+		|#include "libc.h"			|
+		|					|
+		:		:			:
+		:		:			:
+		|@\T					|	<-Be sure to put "@\T" at the end of file.
+		+---------------------------------------+
+
+	Example of Link
+
+		Definition		Display
+		@\l[fig.1]	->	l:fig.1
+
+			Tap "fig.1".
+
+		@\L[fig.1]
+		@\g0001		->	Graphics specified by G0001 is displayed.
+		@\L@@@
+
+		@\G0001{16,16,55,AA,55,AA}
+
+			Touch the ESC icon.
+
+				->	Returns to the original screen. (L:fig.1 is at the top of screen.)
+
+$9.Example of Screen Image (Data Display)
+			+===========================+
+			|LibAdjustTimeDeff2	    |<-Title font
+			| ------------------------  |	----------
+			|Syntax			 |  |		|
+			|#include "define.h"	 |  |		|
+			|#include "libc.h"	 |  |		|
+			|#include "l_define.h"	 |  |		|
+			|#include "l_libc.h"	 |  |		|
+			|void LibAdjustTimeDeff2(|  |		|
+			| int lag,		 |  |
+			| word *year2,		 |  |	Scrolls between these.
+			| byte *month2,		 |  |
+			| byte *day2,		 |  |		|
+			| byte *dweek2,		 |  |		|
+			| byte *hour2,		 |  |		|
+			| byte *minute2,	 |  |		|
+			| byte *second2 )	 |  |		|
+			|Arguments		 |  |		|
+			|int lag :IN		 |  |		|
+			| Time lag correction	 |  |	----------
+			+===========================+
+$10.Database Map (not disclosed)
+
+		+-----------------------+
+		| HEADER		|
+		+-----------------------+			---
+		|			|	@\TTITLE_a	 | MAX 10KB
+		|			|	  :		 |
+		|			|	  :		---
+		| TITLE Data		|	@\TTITLE_b
+		|			|	  :
+		|			|
+		|			|	@\T
+		+-----------------------+			---
+		|			|	@\L[LinkTITEL_a] |
+		|			|	  :		 | MAX 10KB
+		|			|	  :		 |
+		| Link Data		|	@\L		---
+		|			|	  :
+		|			|
+		|			|
+		+-----------------------+
+		|			|	@\G????{ .. }<-1 Data MAX 3200KB
+		| Graphics Data		|
+		|			|
+		+-----------------------+
+		| TITLE INDEX		|
+		+-----------------------+
+		| LinkTITLE INDEX	|
+		+-----------------------+
+		| Graphics INDEX	|
+		+-----------------------+
+
+$11.Internal Format of Database
+  Definition						Internal Code
+  Header
+	@\TTITLE+CR+LF			->	@\TTITLE+0Dh
+	@\CCROSSHEAD+CR+LF		->	@\CCROSSHEAD+0Dh
+
+  Main Body
+	20hÅ`7Fh			->	as is
+	TAB				->	20h
+	CR+LF,CR			->	0Dh
+	@\T+CR+LF			->	@\T+0Dh
+	@\x??				->	??h (single-byte code)
+
+  Graphic Specification
+	@\g????				->	@\g????h(double-byte code)
+	Ex.: @\g1234			->	@\g3412
+
+	@\G????{Xsize,Ysize,??, ..}+CR+LF	->	????h????h??h....
+	Ex.: @\G1234{128,128,0xAA,0x55,}	->	80008000AA55 ...
+
+  Font Specification
+	@\fPB				->	as is
+	@\fPN				->	as is
+	@\fNM				->	as is
+
+  Link
+	@\l[LinkTITLE]			->	@\l+??h+LinkTITLE	(??h=Link string length 1 byte)
+	@\L[LinkTITLE]+CR+LF		->	@\L+??h+LinkTITLE	(??h=Link string length 1 byte)
+	E.g.ÅF @\l[abc]			->	@\l03abc
+								@\f specification is not included in the length of link string.
+	@\L+CR+LF			->	@\L+0Dh
+
+  Jump
+  	@\j[TITLE]			->	@\j+??h+TITLE	(??h=Header string length)
+
+$12.INDEX Table Format (including Link INDEX, Graphic INDEX)
+
+	INDEX Type
+			02h	TITLE INDEX
+					Points to the division number and the header (@\TTITLE) for OFFSET.
+			04h	LinkTITLE INDEX
+					Points to the division number and the link header (@\L[LinkTITLE]) for OFFSET.
+			05h	Graphics INDEX
+					Points to the division number and the graphics (@\G) for OFFSET.
+
+
+	TITLE INDEX , LinkTITLE INDEX
+
+			0 	     +1	      +4	 	 +6
+			+-------------+--------+------------------+---------+
+			|INDEX Type(1)|Dummy(3)|Division Number(2)|OFFSET(2)|
+			+-------------+--------+------------------+---------+
+			|  02 or 04   |00+00+00|Division Number(2)|OFFSET(2)|
+			+-------------+--------+------------------+---------+
+			   :		:	   :			:
+
+	Graphics INDEX
+
+			0	    +1	     +2		     +4          +6
+			+-------------+--------+---------------+-----------+---------+
+			|INDEX Type(1)|Dummy(1)|GraphicsCode(2)|Division(2)|OFFSET(2)|
+			+-------------+--------+---------------+-----------+---------+
+			|     05      |   00   |GraphicsCode(2)|Division(2)|OFFSET(2)|
+			+-------------+--------+---------------+-----------+---------+
+				:	 :	     :		  :		:
+
+$13.Header Information (not disclosed)
+
+ Be sure to add the header information of 256 bytes at the beginning of lexical data.
+ The header information goes into the division number 0000h, offset 0000h.
+ Unused portion is FFh.
+
+		The number in ( ) is the number of bytes. Reserve is fixed to FFh.
+    TOP	+0	+-----------------------+
+		| Fixed to FF00h	|
+	+2	+-----------------------+
+Check->		| "CASIO"+03h (6)	|	Judgment string "CASIO"+03h
+	+8	+-----------------------+
+Check->		| "CA"+"RF"(4)		|	Database ID("CA"=CASIO,"RF"=Referencer)
+		|-----------------------|
+Check->		| DataFormatVersion(4)	|	0100	(=Ver1.00)
+	+16	+-----------------------+
+		| Fixed to 02h		|
+		|-----------------------|
+		| Fixed to 01h		|
+	+18	+-----------------------+
+		| Reserve(2)		|
+	+20	+-----------------------+
+		| DataBaseName(16)	|	Database name(MAX15Byte+00h)	alphanumeric only
+	+36	+-----------------------+
+		| DataBaseSize(4)	|	Database size
+	+40	+-----------------------+
+		| DataBaseVersion(16)	|	Date the database is created(10Byte)Å{Dummy(2byte)Å{Version(4Byte)
+	+56	+-----------------------+
+		| DataBaseVersion(16)	|	<-Same as above.
+	+72	+-----------------------+
+		| Reserve(4)		|
+	+76	+-----------------------+
+		| Reserve(4)		|
+	+80	+-----------------------+
+		| DataDocuments(64)	|	Comments to DataBase(normally FFh)
+	+144	+-----------------------+
+		| Number of Divisions	|
+		|     of Database(2)	|	Number of divisions for Database
+	+146	+-----------------------+
+		| Division Unit		|
+		|     of Database(2)	|	Division Unit of Database(KB)	Ex.) 001Eh with the unit of 30KB
+	+148	+-----------------------+
+		| TITLE INDEX TOP(4)	|	Offset to TITLE IndexTop(Division Number(2)Å{OFFSET position(2))
+	+152	+-----------------------+		Division number is 0000hÅ`(header goes to 0000h)
+		| Total Number		|
+		|    of TITLE INDEX(4)	|
+	+156	+-----------------------+
+		| LinkINDEX TOP(4)	|	Offset to LinkIndex(Division Number(2)Å{OFFSET position(2))
+	+160	+-----------------------+		Division number is 0000hÅ`(header goes to 0000h)
+		| Total Number		|
+		|    of LinkINDEX(4)	|
+	+164	+-----------------------+
+		| GraphicsINDEX TOP(4)	|	Offset to GraphicsIndex(Division Number(2)Å{OFFSET position(2))
+	+168	+-----------------------+		Division number is 0000hÅ`(header goes to 0000h)
+		| Total Number		|
+		|   of GraphicsINDEX(4)	|
+	+172	+-----------------------+
+		| Reserve(84)		|
+	+256	+-----------------------+
+		|			|
+

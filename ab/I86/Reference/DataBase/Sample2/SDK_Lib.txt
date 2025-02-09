@@ -1,0 +1,6554 @@
+@\DNSDK LibDoc
+@\DV0100
+@\TLibAlarm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibAlarm( void )
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the alarm match processing.
+@\TLibAlarmBuzzSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibAlarmBuzzSet(
+ byte b_type )
+@\CArguments
+byte b_type:IN
+ Buzzer type
+ IB_ALMON_DILY:
+  For Daily
+ IB_ALMON_DATA:
+  For Schedule data
+ IB_ALMOFF:
+  Releases buzzer setting
+ IB_ALMBZZ_NOW:
+  Gets buzzer status
+ IB_ALMPUSHWORK:
+  Saves event management work.
+ IB_ALMPOPWORK:
+  Restores event management work.
+@\CReturn values
+byte Buzzer status
+ IB_ALMON_DILY:
+  Daily alarm is sounding.
+  (Only IB_ALMBZZ_NOW)
+ IB_ALMON_DATA:
+  Schedule alarm is
+  sounding.
+ IB_ALMOFF:
+  Buzzer off.
+@\CDescription
+Performs the buzzer-related controls during alarm matches.
+At this point, if ON is set by IB_ALMON_DILY and IB_ALMON_DATA, the BLD message is suppressed until the setting is released by IB_ALMOFF.
+@\CNote
+Never use this function except for the alarm process.
+@\TLibAscii2BCD
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibAscii2BCD(
+ char *ascii )
+@\CArguments
+char *ascii :IN
+ Buffer for ASCII code
+@\CReturn values
+BCD code after conversion
+@\CDescription
+Converts a 2-byte ASCII code specified by "ascii" into 1-byte BCD code, and returns it.
+@\TLibBCD2Ascii
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibBCD2Ascii(
+ byte bcd ,
+ byte *ascii )
+@\CArguments
+byte bcd :IN
+ BCD code
+byte *ascii :OUT
+ Buffer for ASCII code
+@\CReturn values
+None
+@\CDescription
+Converts a 1-byte BCD code specified by "bcd" into 2-byte ASCII code,and writes it to "ascii".
+@\TLibBkSampleCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibBkSampleCheck(
+ bool *passed )
+@\CArguments
+bool *passed  :OUT
+ 1 sec passed: yes/no
+ TRUE : 1 sec passed
+ FALSE: Not passed yet
+@\CReturn values
+byte Inspection result
+ ON : Break cause occur
+ OFF: No break cause yet
+@\CDescription
+Monitors the break key sample status.
+Monitors if it has passed one second since the initialization by LibBkSampleInit() and LibBkSampleInitSub() was performed, and if the break cause pre-set has been occurred.
+@\TLibBkSampleInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibBkSampleInit(
+ BK_SMPL_TCH far *t_tbl )
+@\CArguments
+BK_SMPL_TCH far *t_tbl :IN
+ Touch coordinate table
+ for ESC icon [2]
+@\CReturn values
+None
+@\CDescription
+Initializes the break key sample. (For the main system) Assigns two touch coordinates for the ESC icon to "t_tbl[]".
+If there is only one coordinate, assign the same value to two coordinates.
+@\CNote
+A value that crosses the "0" dot cannot be assigned to t_tbl[].
+If it does not cross, even a negative figure can be used.
+This function is used to perform FLASH accessing process in the system.
+(Search function, etc.)
+Executes LibBkSampleInitSub() with a cause specification for the initialization process during communication process because the break cause to be valid is different.
+@\TLibBkSampleInitSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibBkSampleInitSub(
+ BK_SMPL_TCH far *t_tbl,
+ byte b_smp )
+@\CArguments
+BK_SMPL_TCH far *t_tbl :IN
+ Touch oordinate table
+ for ESC [2]
+byte b_smp  :IN
+ Effective break cause
+ (assigns with OR).
+ IX_BLD1MSG:
+  BLD is vald.
+ IX_CRADLE:
+  Cradle key is valid.
+ IX_ESCBRK:
+  ESC touch is valid.
+@\CReturn values
+None
+@\CDescription
+Initializes the break key sample. (Body process.)
+Assigns two touch coordinates for the ESC icon to "t_tbl[]".
+If there is only one coordinate, assign the same value to two coordinates.
+@\CNote
+A value that crosses the "0" dot cannot be assigned to t_tbl[].
+If it does not cross, evena negative figuare can be used.
+@\TLibBlockIconClick
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibBlockIconClick(
+ const T_ICON far *icon,
+ TCHSTS *tsts,
+ byte opt )
+@\CArguments
+const T_ICON far *icon :IN
+ Icon definition
+ information
+TCHSTS *tsts  :IN
+ Touch status information
+byte opt  :IN
+ Option(s)
+ B_ICON_LEFT:
+  Left-aligned type
+ B_ICON_CENTER:
+  Centered type
+ B_ICON_RIGHT:
+  Right-aligned type
+@\CReturn values
+bool Execution result
+ TRUE : Finalized the pressed state.(Break occurs.)
+ HALF : Repeating.
+ FALSE: Not finalized.
+@\CDescription
+Controls the click operations of the block-type icon (link type) such as a header toolbar.
+This function is applicable to repeat operations depending on the action designation.
+@\CNote
+1. Adds ACT_REPEAT to the action designation in order to make the repeat operation valid.
+ (Example: ACT_ICON | ACT_REPEAT)
+2. The size of an icon is up to 256 bytes.
+@\TLibBox
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibBox(
+ int x,
+ int y,
+ int xsize,
+ int ysize,
+ byte type )
+@\CArguments
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+int xsize  :IN
+ Box size Width
+int ysize  :IN
+ Box size Height
+byte type  :IN
+ Box Line Width
+@\CReturn values
+None
+@\CDescription
+Draws a box.
+This is used to draw a box with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibBuzzerOff
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibBuzzerOff(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Turns off a buzzer.
+@\TLibBuzzerOn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibBuzzerOn(
+ byte b_type )
+@\CArguments
+byte b_type :IN
+ Buzzer type
+ IB_BEEP0_SET:
+  Through (Sounds for 1-sec.)
+ IB_BEEP1_SET:
+  1 time per second
+ IB_BEEP2_SET:
+  2 times per second
+ IB_BEEP3_SET:
+  3 times per second
+@\CReturn values
+None
+@\CDescription
+Sounds a buzzer.
+@\TLibCalBase
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalBase(
+ CALWRAM *calram,
+ byte kind )
+@\CArguments
+CALWRAM *calram :IN/OUT
+ Calculator data buffer
+byte  kind :IN
+ Arithmetic operation
+  0x00: +
+  0x01: -
+  0x02: @\xC2
+  0x03: @\xC3
+@\CReturn values
+None
+@\CDescription
+Performs Calculator's four basic calculations.
+@\TLibCalBaseData
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalBaseData(
+ byte *a_dat,
+ const byte *n_dat1,
+ const byte *n_dat2,
+ byte kind )
+@\CArguments
+byte *a_dat :OUT
+ Calculation result buffer [CAL_EZSIZE]
+const byte *n_dat1 :IN
+ Operation destination buffer1 [CAL_EZSIZE]
+const byte *n_dat2 :IN
+ Operation destination buffer2 [CAL_EZSIZE]
+byte kind :IN
+ Operation types
+  0x00: +
+  0x01: -
+  0x02: @\xC2
+  0x03: @\xC3
+@\CReturn values
+None
+@\CDescription
+Performs Calculator's four basic calculations using the operation buffer in the exponential format.
+*n_dat1 kind(+ - @\xC2 @\xC3)
+ *n_dat2
+@\CNote
+Not detecting the operation result error.
+@\TLibCalBuf2Dat
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalBuf2Dat(
+ byte *c_dat,
+ const byte *c_buf )
+@\CArguments
+byte *c_dat :OUT
+ Operation buffer (Exponential format) [CAL_EZSIZE]
+const byte *c_buf :IN
+ Operation buffer(Display format)[CAL_BUFSIZE]
+@\CReturn values
+None
+@\CDescription
+Converts the display format operation buffer of the Calculator into exponential format.
+@\TLibCalDat2Buf
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalDat2Buf(
+ byte *c_buf,
+ const byte *c_dat )
+@\CArguments
+byte *c_buf :OUT
+ Operation buffer(Display format)[CAL_BUFSIZE]
+const byte *c_dat :IN
+ Operation buffer (Exponential format)[CAL_EZSIZE]
+@\CReturn values
+None
+@\CDescription
+Converts the exponential format operation buffer of the Calculator into display format.
+@\TLibCalKeyDsp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalKeyDsp(
+ CALWRAM *calram )
+@\CArguments
+CALWRAM *calram :IN
+ Calculator data buffer
+@\CReturn values
+None
+@\CDescription
+Displays the Calculator keyboard.
+@\CNote
+The "calram" must be initialized using LibCalKeyInit() before executing this function.
+This function does not perform data transfer to the D/D.
+Therefore, newly set data is not displayed actually (invalid) unless LibPutDisp is executed.
+@\TLibCalKeyInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalKeyInit(
+ CALWRAM *calram )
+@\CArguments
+CALWRAM *calram : OUT
+ Calculator data buffer
+@\CReturn values
+None
+@\CDescription
+Initializes the Calculator keyboard.
+The "calram" operation buffer is cleared to "0".
+(This is equivalent to the  AC key operation.)
+@\TLibCalKeyTchWait
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalKeyTchWait(
+ CALWRAM *calram,
+ TCHSTS *tsts )
+@\CArguments
+CALWRAM *calram :IN/OUT
+ Calculator data buffer
+TCHSTS *tsts :IN/OUT
+ Touch status information
+@\CReturn values
+None
+@\CDescription
+Waits for touching of the Calculator keyboard, and performs from the operation processing to the display processing.
+If the touch occurs in the area outside the Calculator keyboard,the object code is output to "tsts->obj".
+When "NEXT" key or "=" on the Calculator keyboard is pressed, OBJ_CAL_NEXT or OBJ_CAL_EQUAL is output to"tsts->obj".
+When other Calculator keys are pressed, the operation processing is continued without stepping out from this function.
+When loading the calculation result,it is necessary to edit the contents of "calram->calxbuf[]" according to the specification.
+@\TLibCallListMenu
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCallListMenu(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the list type menu.
+@\TLibCalRoot
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalRoot(
+ CALWRAM *calram )
+@\CArguments
+CALWRAM *calram :IN/OUT
+ Calculator data buffer
+@\CReturn values
+None
+@\CDescription
+Performs Calculator's root calculation.
+@\TLibCalWin
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCalWin(
+ byte tch_btn )
+@\CArguments
+byte tch_btn :IN
+ Loading function of arithmetic operation result.
+ ON : Loading
+ OFF: No loading
+@\CReturn values
+None
+@\CDescription
+Calls the Calculator of the pop-up tool.
+If "tch_btn" is ON,a button is provided,which is used to write calculation results to the copy buffer.
+@\TLibChangeBcdVal
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibChangeBcdVal(
+ byte bcd )
+@\CArguments
+byte bcd :IN BCD code
+@\CReturn values
+Numeric number
+@\CDescription
+Converts a BCD code specified by "bcd" into numeric number.
+@\TLibChangeTotalDay
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibChangeTotalDay(
+ word *year2,
+ byte *month2,
+ byte *day2,
+ dword tday )
+@\CArguments
+word *year2  :OUT Year
+byte *month2 :OUT Month
+byte *day2   :OUT Day
+dword tday :IN
+ Total number of days
+@\CReturn values
+The day of the week
+@\CDescription
+Converts the total number of days specified by "tday" into the date (numeric format).
+@\TLibChangeValBcd
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibChangeValBcd(
+ byte val )
+@\CArguments
+byte val :IN
+ Numeric number
+@\CReturn values
+BCD code
+@\CDescription
+Converts a numeric number specified by "val" into BCD code.
+@\TLibCheckDate
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibCheckDate(
+ byte *dbuff )
+@\CArguments
+byte *dbuff :IN
+ Date type string [8] (YYYYMMDD)
+@\CReturn values
+bool Inspection result
+@\CDescription
+Checks if the character string specified by "dbuff" is valid as the date type.
+@\TLibCheckPMode
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibCheckPMode(
+ byte main_code,
+ byte sub_code,
+ word status);
+@\CArguments
+byte main_code :IN
+ Main mode Code
+byte sub_code  :IN
+ Sub mode code
+word status    :IN
+ Program status
+@\CReturn values
+bool Results
+ TRUE : Corresponding
+ FALSE: Not corresponding
+@\CDescription
+It checks whether there is a program concerning specified mode and status.
+@\TLibChkFuture
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibChkFuture(
+ byte *tgt,
+ byte *now,
+ byte ct )
+@\CArguments
+byte *tgt :
+ Compare to date/time (Target)
+byte *now :
+ Compare from date/time (Source)
+byte ct :
+ Comparison method
+  8:Date
+  4:Time
+@\CReturn values
+Comparison result
+0: "*tgt" is the past.
+1: "*tgt" is the present.
+2: "*tgt" is the future.
+@\CDescription
+Performs the size comparison (old and new comparison) of the date/time data.
+@\TLibChkSysAlarm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibChkSysAlarm(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Corrects the system alarm data.
+Checks the system alarm and corrects if the value is not normal.
+@\TLibChkTimeBuf
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibChkTimeBuf(
+ byte far *buf )
+@\CArguments
+byte far *buf  :IN
+ Time data buffer [5] "HHMMA"
+@\CReturn values
+bool Inspection result
+ TRUE : Normal
+ FALSE: Abnormal
+@\CDescription
+Performs the validity test to the time format data specified in "buf".
+@\TLibCldKeyInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCldKeyInit(
+ TCHSTS *tsts,
+ byte *db,
+ int xsp,
+ int ysp,
+ byte type1,
+ byte F_Type )
+@\CArguments
+TCHSTS *tsts :IN
+ Touch status information
+byte *db :IN
+ Date buffer [8]
+int xsp :IN
+ Start point of display Horizontal
+int ysp :IN
+ Start point of display Vertical
+byte type1 :IN
+ Display format
+  IN_MODE: For input
+  DISP_MODE: For display
+  DISP_YM: Year-Month
+  DISP_MY: Month-Year
+  IN_YM: Year-Month input
+byte F_Type :IN
+ Font type
+@\CReturn values
+None
+@\CDescription
+Initializes the calendar keyboard.
+@\TLibClkDispCursor
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibClkDispCursor(
+ LPTIMEKEYBCTRL lptbl,
+ int csrpos )
+@\CArguments
+LPTIMEKEYBCTRL lptbl :IN
+ Time array
+int csrpos  :IN
+ Cursor position
+@\CReturn values
+None
+@\CDescription
+Displays the cursor of the specified time input structure "lptbl".
+The character string must be displayed using LibClkDispLine before this function is applied.
+(Because this function only inverts the specified part of the characters internally.)
+@\TLibClkDispLine
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibClkDispLine(
+ LPTIMEKEYBCTRL lptbl )
+@\CArguments
+LPTIMEKEYBCTRL lptbl :IN
+ Time array
+@\CReturn values
+None
+@\CDescription
+Displays the contents of the specified time input structure "lptbl".
+@\TLibCloseWindow
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCloseWindow(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Closes a window.
+Closes the last-opened window and restores the original VRAM data.
+@\CNote
+It causes an error if attempting to close more windows than actually opened.
+@\TLibClrBox
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibClrBox(
+ int x,
+ int y,
+ int xsize,
+ int ysize )
+@\CArguments
+int x  :IN
+ Start coordinate  - Horizontal
+int y  :IN
+ Start coordinate  - Vertical
+int xsize  :IN
+ Size to clear - width
+int ysize  :IN
+ Size to clear - height
+@\CReturn values
+None
+@\CDescription
+Clears the rectangular area.
+This is used to clear the rectangular area with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibClrDisp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibClrDisp(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Clears the entire screen.
+@\TLibCngeBoxSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibCngeBoxSub(
+ int x,
+ int y,
+ int x2,
+ int y2,
+ byte type )
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+byte type :IN
+ Patterns for format
+  IB_GDS_AND :Clear
+  IB_GDS_REV :Reverse
+  IB_GDS_MESH:Shade
+@\CReturn values
+None
+@\CDescription
+Change the appearance of the rectangular area.
+Applies a pattern specified in "type" to the rectangular area that locates at specified coordinate.
+@\TLibContrastDown
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibContrastDown(void)
+@\CArguments
+None
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed (No more lightness.)
+@\CDescription
+Adjusts the contrast setting one level lighter.
+@\TLibContrastInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibContrastInit(void)
+@\CArguments
+None
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Initializes the contrast setting. (Restores the factory defaults.)
+@\TLibContrastUp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibContrastUp(void)
+@\CArguments
+None
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed (No more darkness.)
+@\CDescription
+Adjusts the contrast setting one level darker.
+@\TLibConvLib2Raw
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibConvLib2Raw(
+ byte *dest,
+ byte *src )
+@\CArguments
+byte *dest :IN
+ Library time before conversion ('HHMMA')
+byte *src :OUT
+ 4-byte time after conversion ('HHMM')
+@\CReturn values
+None
+@\CDescription
+Converts the acceptable value (Library time) of LibInputTime to the 4-byte character string for 24-hour system based on the system settings.
+@\TLibConvRaw2Lib
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibConvRaw2Lib(
+ byte *dest,
+ byte *src,
+ bool IsLarge )
+@\CArguments
+byte *dest :IN
+ 4-byte time (HHMM) before
+ conversion.
+byte *src :OUT
+ Converted library time
+ (HHMM).
+bool IsLarge :IN
+ AM/PM in capital
+  TRUE: AM/PM in capital after conversion.
+@\CReturn values
+None
+@\CDescription
+Converts the "HHMM" array for 24-hour system to the acceptable value (Library time) with LibInputTime based on the system settings.
+@\TLibCrdlOpnJmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCrdlOpnJmp(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Changes the mode status to OPEN mode, and performs a forcible mode jump to PC-Link process.
+@\TLibCurBlnkOff
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCurBlnkOff(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Turns off a cursor.
+@\TLibCurBlnkOn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCurBlnkOn(
+ int x,
+ int y,
+ int xsize,
+ int ysize )
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+int xsize :IN
+ Horizontal size
+int ysize :IN
+ Vertical size
+@\CReturn values
+None
+@\CDescription
+Blinks a cursor.
+The cursor shape is a reverse of the specified area.
+@\TLibCurBlnkOn2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibCurBlnkOn2(
+ int x,
+ int y,
+ int xsize,
+ int ysize )
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+int xsize :IN
+ Horizontal size
+int ysize :IN
+ Vertical size
+@\CReturn values
+None
+@\CDescription
+Blinks a cursor.
+The cursor shape is a reverse of the blank part of the specified area.
+@\TLibCurErase
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibCurErase(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Clears a cursor.
+Puts a cursor to the off state unconditionally.
+@\TLibCuttextRtn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibCutTextRtn(
+ byte *txbf )
+@\CArguments
+byte *txbf :IN/OUT
+ Text buffer
+@\CReturn values
+Text state
+ TRUE : Has data in the buffer.
+ FALSE: None
+@\CDescription
+Deletes the CR code at the end of a text or an item.
+@\TLibDataCom
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDataCom(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the Data Communication process.
+@\TLibDateDisp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibDateDisp(
+ byte *buff, byte type,
+ int xp, int yp, int xep,
+ byte dmode, byte F_Type )
+@\CArguments
+byte *buff :IN
+ Date string buffer [8] ASCII FORMAT
+byte type :IN
+ Day of the week display:
+ preset/non
+  WEEK_ON: Present
+  WEEK_OFF: None
+int xp :IN
+ Display start coordinate Horizontal
+int yp :IN
+ Display start coordinate Vertical
+int xep :IN
+ Display end coordinate Horizontal
+byte dmode :IN
+ Display format
+  IN_MODE  : For input
+  DISP_MODE: For display
+  DISP_YM  : Year-Month
+  DISP_MY  : Month-Year
+  IN_YM : Year-Month input
+byte F_Type :IN
+ Font type
+@\CReturn values
+Execution result
+ TRUE : Normal
+ FALSE: Abnormal (buff[]: All "0".)
+@\CDescription
+Displays the date string specified by "buff[]" to the specified coordinates.
+@\TLibDigitizer
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibDigitizer(
+ word *obj )
+@\CArguments
+word *obj :OUT
+ Hardware icon object code
+ (For startup from OFF.)
+@\CReturn values
+byte End status
+ IB_NOERR_END: Normal end
+ IB_ESC_END: Ends by ESC icon or after OFF key.
+ IB_ALM_END: Ends by alarm matching.
+ IB_PON_END: Starts up from off mode.
+@\CDescription
+Adjusts the touch-panel.
+@\TLibDispKey
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDispKey(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Displays the generic keyboard.
+@\TLibDotOff
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDotOff(
+ int x, int y )
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+ (Graphic system)
+int y :IN
+ Coordinate - Vertical
+ (Graphic system)
+@\CReturn values
+None
+@\CDescription
+Clears a dot.
+This is used to clear a dot with a size of one dot both for the width and height at the coordinate specified by (x, y).
+@\TLibDotOn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDotOn(
+ int x, int y )
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+@\CReturn values
+None
+@\CDescription
+Draws a dot.
+This is used to draw a dot with a size of one dot both for the width and height at the coordinate specified by (x, y).
+@\TLibDrawBox
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawBox(
+ DRAWBOX_PACS draw_prm,
+ byte page )
+@\CArguments
+RAWBOX_PACS draw_prm :IN
+ Parameter table
+byte page  :IN
+ Write page
+  0:Real screen
+  1:Background screen
+    + VRAM/DD
+    When no background:
+    Always VRAM+DD.
+@\CReturn values
+None
+@\CDescription
+Draws a box.
+@\TLibDrawCircle
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawCircle(
+ DRAWCIRCLE_PACS draw_prm,
+ byte page )
+@\CArguments
+DRAWCIRCLE_PACS draw_prm
+ :IN Parameter table
+byte page  :IN
+ Write page
+  0:Real screen
+  1:Background screen
+    + VRAM/DD
+    When no background:
+    Always VRAM+DD.
+@\CReturn values
+None
+@\CDescription
+Draws a circle.
+@\TLibDrawFillArea
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawFillArea(
+ FillArea_PACS draw_prm,
+ byte page )
+@\CArguments
+FillArea_PACS draw_prm :IN
+ Parameter table
+byte page  :IN
+ Write page/contrast
+@\CReturn values
+None
+@\CDescription
+Fills the rectangular area.
+@\TLibDrawGetImage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibDrawGetImage(
+ GetImage_PACS draw_prm,
+ byte page )
+@\CArguments
+GetImage_PACS draw_prm :IN
+ Parameter table
+byte page  :IN
+ Read page
+ 0:Real screen
+ 1:Background screen
+ 2:VRAM
+ When no background: Always VRAM
+@\CReturn values
+Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Gets an image from VRAM.
+@\TLibDrawInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawInit(
+ INIT_PACS draw_prm )
+@\CArguments
+INIT_PACS draw_prm :IN
+ Parameter table
+@\CReturn values
+None
+@\CDescription
+Initializes the drawing BIOS.
+@\TLibDrawLine
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawLine(
+ DRAWLINE_PACS draw_prm,
+ byte page )
+@\CArguments
+DRAWLINE_PACS draw_prm :IN
+ Parameter table
+byte page  :IN
+ Write page
+ 0:Real screen
+ 1:Background screen
+   + VRAM/DD
+ When no background: Always VRAM+DD.
+@\CReturn values
+None
+@\CDescription
+Draws a line.
+@\TLibDrawPrmCall
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+int LibDrawPrmCall(
+ byte func_no,
+ void *draw_prm,
+ byte al )
+@\CArguments
+byte func_no :IN
+ Drawing BIOS Function number
+void *draw_prm :IN
+ Parameter table address
+byte al  :IN
+ AL Register input value
+@\CReturn values
+ax register output value
+@\CDescription
+Calls a drawing BIOS using the function number specified by "func_no".
+@\TLibDrawPutImage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawPutImage(
+ PutImage_PACS draw_prm,
+ byte page )
+@\CArguments
+PutImage_PACS draw_prm :IN
+ Parameter table
+byte page  :IN
+ Write page
+ 0:Real screen
+ 1:Background screen
+   + VRAM/DD
+ When no background: Always VRAM+DD.
+@\CReturn values
+None
+@\CDescription
+Writes an image to VRAM.
+@\TLibDrawReductImage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibDrawReductImage(
+ ReductImage_PACS draw_prm
+ )
+@\CArguments
+ReductImage_PACS draw_prm :IN
+ Parameter table
+@\CReturn values
+Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Reduces an image.
+@\TLibDrawSetClipArea
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawSetClipArea(
+ SETCLIPAREA_PACS draw_prm
+ )
+@\CArguments
+SETCLIPAREA_PACS draw_prm :IN
+ Parameter table
+@\CReturn values
+None
+@\CDescription
+Specifies a drawing area.
+@\TLibDrawSetPoint
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawSetPoint(
+ byte page,
+ int x,int y,
+ byte point,byte mode )
+@\CArguments
+byte page :IN
+ Write page
+ 0:Real screen
+ 1:Background screen
+   + VRAM/DD
+ When no background: Always VRAM+DD.
+int x :IN
+ Draw x-coordinate
+int y :IN
+ Draw y-coordinate
+byte point :IN
+ Pen size
+ 0: 1-dot pen
+ 1: 2-dot pen
+ 2: 4-dot pen
+byte mode :IN
+ Drawing mode
+@\CReturn values
+None
+@\CDescription
+Draws a dot.
+@\TLibDrawSetPtn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawSetPtn(
+ byte val )
+@\CArguments
+byte val :IN
+ Contrast (0 - 10)
+@\CReturn values
+None
+@\CDescription
+Specifies a contrast of the handwriting pen.
+@\TLibDrawTransAll
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawTransAll(
+ byte val )
+@\CArguments
+byte val :IN
+ Transfer zone
+*0:VRAM -> Raw
+*1:VRAM -> BackGround
+ 2:VRAM -> VRAM (NOP)
+ 3:VRAM -> DD (PutDisp)
+*4:Clear Raw, BG->VRAM(DD)
+*5:Clear BG, Raw->VRAM(DD)
+*6:BackGround + Raw
+  ->VRAM(DD)(Full-PutDisp)
+ 7:(Clear BG & Raw &) VRAM
+  CLEAR (ALL CLEAR)
+The item with * symbol is invalid (NOP) in the no background mode.
+@\CReturn values
+None
+@\CDescription
+Transfers the entire screen data between the specified virtual VRAMs, and between the system VRAMs.
+@\TLibDrawTransDD
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibDrawTransDD(
+ TransDD_PACS draw_prm,
+ byte dd )
+@\CArguments
+TransDD_PACS draw_prm :IN
+ Parameter table
+byte dd  :IN
+ Transfer zone
+ 0:VRAM -> Background
+ 1:VRAM -> Raw
+ 2:Raw -> Background
+ 3:Background -> Raw
+ 4:VRAM -> DD
+@\CReturn values
+None
+@\CDescription
+Transfers the specified VRAM area to other VRAM defined individually.
+@\TLibDspWinMessage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibDspWinMessage(
+ byte g_no, int mes_no,
+ byte b_cnt, byte b_type )
+@\CArguments
+byte g_no :IN
+ Icon (graphic) number
+ None when IB_MWIN_NO_ICON
+int mes_no :IN
+ Message number
+byte b_cnt :IN
+ Number of buttons (0 - 2)
+byte b_type :IN
+ Button type
+ IB_MWIN_NONE: None
+ IB_MWIN_YES_NO: YES/NO (Two buttons)
+ IB_MWIN_SET_ESC: SET/ESC (Two buttons)
+ IB_MWIN_OK: OK (One button)
+ IB_MWIN_SET: SET (One button)
+ IB_MWIN_ESC: ESC (One button)
+ IX_MWIN_CENTER:
+  Assign window position center.
+@\CReturn values
+None
+@\CDescription
+Displays a dialog message.
+The window position is centered in the screen when IX_MWIN_CENTER is logical ORed with "b_type".
+@\TLibDualWin
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void far *LibDualWin(
+ word m_code,
+ byte m_sts,
+ void far *ptr)
+@\CArguments
+word  m_code :IN
+ Mode code
+  High-order: Main mode
+  Low-order: Sub mode
+byte  m_sts :IN
+ Mode status
+void far *ptr :IN
+ Data pointer
+@\CReturn values
+Data pointer
+@\CDescription
+Starts up the dual-window and gets the data pointer that has been handled by the dual-processing side.
+@\TLibDualWinExit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibDualWinExit(
+ void far *ptr)
+@\CArguments
+void far *ptr :IN
+ Data pointer
+@\CReturn values
+Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Quits the dual-window, and returns to the place started up.
+@\TLibEditPullDown
+@\CSyntax
+#include "define.h"
+#include "PullDown.h"
+void LibEditPullDown(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Performs the pull-down menu process during item input.
+Performs the pattern selection in order to select only 4 items of the SYSTEM.
+@\TLibELHandle
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibELHandle(
+ byte mode)
+@\CArguments
+byte  mode :IN
+ ON type
+  IB_ELP_OFF: Turns OFF.
+  IB_ELP_ON : Turns ON.
+@\CReturn values
+None
+@\CDescription
+Performs various EL-panel operations.
+@\TLibErrorDisp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibErrorDisp(
+ word err_code)
+@\CArguments
+word err_code :IN
+ Error code
+@\CReturn values
+None
+@\CDescription
+Displays a message that corresponds to FLASH memory error code.
+@\CNote
+Normally, specify the global variable FlashStatus to "err_code".
+Additionally, the execution timing has to be immediately after FLASH access.
+Every time when the FLASH related BIOS is executed,the error code is output to "FlashStatus".
+So it is necessary to update it to the latest value.
+@\TLibExeAddin
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+word LibExeAddin(void)
+@\CArguments
+None
+@\CReturn values
+word Result of execution
+IX_ADIN_SUCCESS :Success.
+IX_ADIN_COMMERR :Time-out or Communication failure.
+IX_ADIN_DETECTBLD :Detected BLD1(low-battery).
+IX_ADIN_DATAFULL :User data area full.
+@\CDescription
+It executes add-in synchro.
+@\TLibFileCorect
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileCorect(
+ const FILE_BUF *fb,
+ FILE_INFO *finf,
+ byte type)
+@\CArguments
+const FILE_BUF *fb  :IN
+ File buffer
+FILE_INFO *finf  :IN
+ File information
+byte type :IN
+ Type
+  0: Normal correction
+  1: Corrects without changing the pointer.
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Writes the change of the data pointer to the FLASH memory with the option specification.
+This function writes the contents in the buffer "fb" to the data pointer specified by "finf->fp".
+When "type" is set to "1", the data pointer does not change.
+If the function fails to write data, it returns FALSE.
+@\CNote
+Supports only for correction.
+The normal operation of this function can be performed only for some limited modes such as SCHEDULE mode.
+See the BIOS document when using a mode with this function.
+Normally, LibFileWrite() should be used.
+@\TLibFileExch
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileExch(
+ const FILE_BUF *fb,
+ FILE_INFO *finf,
+ const word mvp)
+@\CArguments
+const FILE_BUF *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+const word mvp :IN
+ Destination data pointer
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Moves the pointer data specified by "finf->fp" to the "mvp" pointer.
+The data following to "mvp" are shifted one toward next direction.
+@\TLibFileFindNext
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileFindNext(
+ const FILE_BUF *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+FILE_BUF *fb  :IN
+ File buffer
+FILE_INFO *finf  :IN/OUT
+ File information
+byte  search  :IN
+ Search conditions
+@\CReturn values
+bool  Result
+ TRUE : Has data.
+ FALSE: No data.
+@\CDescription
+Searches for next data.
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the next direction based on the search conditions.
+If next data is found, the function updates "finf->fp", and returns TRUE.
+When 0xffff is set to "finf->fp", searches for data from the beginning.
+When 0xfffe is set to "finf->fp", searches for the last data.
+@\TLibFileFindNextExt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileFindNextExt(
+ const FILE_BUF *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+FILE_BUF  *fb  :IN/OUT
+ File buffer
+FILE_INFO *finf  :IN/OUT
+ File information
+byte  search  :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ HALF : Has data but not perfect match.
+ FALSE: No data.
+@\CDescription
+Searches for next data. (For extension.)
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the next direction based on the search conditions.
+If next data is found, the function updates "finf->fp", and then returns TRUE.
+When 0xffff is set to "finf->fp", searches for data from the beginning.
+When 0xfffe is set to "finf->fp", searches for the last data.
+Differently from LibFileFindNext(), this function also supports data other than the perfect matching data.
+@\TLibFileFindPrev
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileFindPrev(
+ const FILE_BUF *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+FILE_BUF *fb  :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte search :IN
+ Search conditions
+@\CReturn values
+bool  Result
+ TRUE : Has data.
+ FALSE: No data.
+@\CDescription
+Searches for previous data.
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the previous direction based on the search conditions.
+If previous data is found, the function updates "finf->fp", and then returns TRUE.
+@\TLibFileRead
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileRead(
+ FILE_BUF *fb,
+ const FILE_INFO *finf)
+@\CArguments
+FILE_BUF *fb  :IN/OUT
+ File buffer
+const FILE_INFO *finf :IN
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Reads data from the FLASH memory.
+This function reads FLASH memory data from the data pointer specified by "finf->fp" and sets it in the buffer specified by "fb".
+Position in the buffer may vary depending on the mode/sub-mode.
+@\TLibFileReadEx
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileReadEx(
+ FILE_BUF *fb,
+ const FILE_INFO *finf,
+ int maxblock)
+@\CArguments
+const FILE_BUF *fb :IN/OUT
+ File buffer
+FILE_INFO  *finf :IN
+ File information
+Int  maxblock :IN
+ The number of the blocks to read (maxblock >= 1)
+@\CReturn values
+bool Result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+It reads specification block number data from FLASH.
+@\CNote
+The size of 1block is defined in "FILE_BLOCK_SIZE".
+@\TLibFileRemake
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileRemake(void)
+@\CArguments
+None
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Executes the FLASH memory remaking process.
+@\CNote
+The BIOS that is called by this function checks the break key sample during processing.
+Be sure to initialize the break key before executing this function.
+@\TLibFileRemove
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileRemove(
+ const FILE_BUF *fb,
+ const FILE_INFO *finf)
+@\CArguments
+const FILE_BUF *fb :IN
+ File buffer
+const FILE_INFO *finf :IN
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Deletes data (1 record) in the FLASH memory.
+Deletes data of the data pointer specified by "finf->fp".
+@\CNote
+"fb" in the first argument is not used.
+@\TLibFileRemoveAll
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileRemoveAll(
+ const FILE_BUF *fb)
+@\CArguments
+const FILE_BUF *fb :IN
+ File buffer
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Deletes all data (multiple data) in the FLASH memory.
+Deletes all data specified by "fb->main_entry, and fb->sub_entry" in units of modes/sub-modes.
+@\CNote
+Be sure to set the following information.
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number (All data when 0x00)
+ fb->fsb_scrt_info_: Secret zone
+This will not delete both Secret and Open modes.
+Only an area specified by "fb->scrt_info" is a target.
+@\TLibFileWrite
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileWrite(
+ const FILE_BUF *fb,
+ FILE_INFO *finf)
+@\CArguments
+const FILE_BUF *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Writes data to the FLASH memory.
+This function writes the contents in the buffer specified by "fb" to the data pointer specified by "finf->fp", and then sets a new data pointer to "finf->fp".
+If 0xffff is set to "finf->fp", data is registered newly.
+If the function fails to write data, it returns FALSE.
+@\CNote
+When writing data to the FLASH memory, the data pointer changes even if it is just a correction of existing data.
+Therefore, if the data pointer is held in buffer such as list buffer, the changed finf->fp after calling this function must be reflected.
+@\TLibFileWriteCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFileWriteCheck(
+ const FILE_BUF *fb)
+@\CArguments
+const FILE_BUF *fb :IN
+ File buffer
+@\CReturn values
+bool Result
+ TRUE : Write enabled.
+ FALSE: Write disabled.
+@\CDescription
+Checks whether data can be written to the FLASH memory.
+Normally it is required to execute LibFileWrite() for checking the FLASH memory full.
+However, it is possible to check it using this function in advance.
+Examines whether the buffer data specified by "*fb" can be written using LibFileWrite().
+@\CNote
+Be sure to execute LibFileWriteCheckInit() immediately before using this function.
+The normal operation of this function can be performed only for some limited modes such as EXPENSE mode.
+See the BIOS document when using the mode with this function.
+@\TLibFileWriteCheckInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFileWriteCheckInit(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Performs the initial settings of LibFileWriteCheck().
+Calls this function one time before executing LibFileWriteCheck().
+LibFileWriteCheck() checks a capacity of the FLASH memory based on the FLASH capacity at the last execution of this function.
+@\CNote
+The normal operation of this function can be performed only for some limited modes such as EXPENSE mode.
+See the BIOS document when using a mode with this function.
+@\TLibFuncCapa
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncCapa(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the FLASH memory capacity displays process.
+@\TLibFuncContrast
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncContrast(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the CONTRAST setting process.
+@\TLibFuncDateTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncDateTime(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the date/time setting process.
+@\TLibFuncDigitizer
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncDigitizer(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the touch-panel adjustment process.
+@\TLibFuncFormat
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncFormat(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the setting process of the various FORMATS.
+@\TLibFuncLang
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFuncLang(
+ void)
+@\CArguments
+None
+@\CReturn values
+bool Changed/Not changed
+ TRUE : Changed.
+ FALSE: Not changed.
+@\CDescription
+Calls the language change process.
+If the language currently used is changed, the function returns TRUE.
+@\TLibFuncMemoryManagement
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncMemoryManagement(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the memory management process.
+@\TLibFuncPtool
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibFuncPtool(
+ void)
+@\CArguments
+None
+@\CReturn values
+bool Date change/not changed
+ TRUE : Changed.
+ FALSE: Not changed.
+@\CDescription
+Calls the pop-up tool.
+@\CNote
+This function executes nothing when the mode status works in the Dual-Window.
+@\TLibFuncSound
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibFuncSound(
+ bool IsAlarmOnly)
+@\CArguments
+bool IsAlarmOnly :IN
+ Setting limitation
+ Except "0": Only alarm setting.
+ "0": Possible to change all.
+@\CReturn values
+None
+@\CDescription
+Calls the sound information setting process.
+@\TLibGdsBox
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsBox(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2  :IN
+ Bottom right abscissa
+int y2  :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a box by overriding.
+@\TLibGdsBoxClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsBoxClr(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Clears a box.
+@\TLibGdsBoxCmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsBoxCmp(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a box using XOR operator.
+@\TLibGdsBoxMesh
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsBoxMesh(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a box with dotted lines.
+@\TLibGdsClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsClr(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Clears a rectangular area.
+@\TLibGdsDotCmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsDotCmp(
+ int x,int y)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a dot using XOR operator.
+@\TLibGdsDotOff
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsDotOff(
+ int x,int y)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+@\CReturn values
+None
+@\CDescription
+Clears a dot.
+@\TLibGdsDotOn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsDotOn(
+ int x,int y)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a dot.
+@\TLibGdsLine
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsLine(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2:IN
+ Bottom right abscissa
+int y2:IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a line by overriding.
+@\TLibGdsLineClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsLineClr(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2:IN
+ Bottom right abscissa
+int y2:IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Clears a line.
+@\TLibGdsLineCmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsLineCmp(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2:IN
+ Bottom right abscissa
+int y2:IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a line using XOR operator.
+@\TLibGdsLineMesh
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsLineMesh(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2:IN
+ Bottom right abscissa
+int y2:IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Draws a dotted line.
+@\TLibGdsMesh
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsMesh(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Shades a rectangular area.
+@\TLibGdsReverse
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGdsReverse(
+ int x,int y,
+ int x2,int y2)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+@\CReturn values
+None
+@\CDescription
+Reverses a rectangular area. 
+@\TLibGetAlarmFlg
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+int LibGetAlarmFlg(
+ void)
+@\CArguments
+None
+@\CReturn values
+Inspection result
+ TRUE : ON
+ FALSE: OFF
+@\CDescription
+Checks whether the alarm switch is on/off.
+@\TLibGetAlarmInfo
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibGetAlarmInfo(
+ FILE_BUF *afd,
+ FILE_INFO *afi)
+@\CArguments
+FILE_BUF *afd :IN/OUT
+FILE_INFO *afi :IN/OUT
+@\CReturn values
+Match data result
+ TRUE : Matched.
+ FLASE: Unmatched.
+@\CDescription
+Gets the alarm information already set.
+@\TLibGetAlarmObj
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetAlarmObj(
+ TCHTBL *t_tbl)
+@\CArguments
+TCHTBL *t_tbl :OUT
+ Touch table information
+@\CReturn values
+None
+@\CDescription
+Gets the touch table information that has been touched during alarm matches.
+This function outputs the touch table information of the upper layer where BIOS is saved to "*tsts".
+@\CNote
+Be sure to execute LibAlarmBuzzSet(IB_ALMPUSHWORK). Never use this function except for the alarm process.
+@\TLibGetAllEntry
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibGetAllEntry(
+ byte *name_str,
+ byte *main_entry,
+ byte *sub_entry);
+@\CArguments
+byte *name_str :IN
+ Pointer of file name buffer(15+1bytes)
+byte *main_entry :OUT
+ main entry code
+byte *sub_entry :OUT
+ sub entry code
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+Gets main entry code and sub entry code.
+The state is output to "SubEntryStat".
+"SubEntryStat" is global variables.
+@\TLibGetAPOTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+word LibGetAPOTime(
+ void)
+@\CArguments
+None
+@\CReturn values
+word APO time (500-ms units)
+@\CDescription
+Gets the APO time.
+@\TLibGetBLD
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibGetBLD(
+ void)
+@\CArguments
+None
+@\CReturn values
+Inspection result
+ TRUE : Normal
+ FALSE: Low battery
+@\CDescription
+Checks the battery status.
+@\TLibGetCale
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetCale(
+ byte *db,
+ TCHSTS *tsts,
+ int xsp,
+ int ysp,
+ int xep,
+ word mes,
+ byte type,
+ byte type1,
+ byte F_Type)
+@\CArguments
+byte  *db :IN/OUT
+ Date buffer [8]
+TCHSTS *tsts :OUT
+ Touch status information
+int xsp :IN
+ Start point of display Horizontal
+int ysp :IN
+ Start point of display Vertical
+int xep :IN
+ End point of display Horizontal
+word mes :IN
+ Guidance message number
+ No message for 0xfffe
+byte type :IN
+ Day of the week display:
+ preset/non
+  WEEK_ON : Present
+  WEEK_OFF: None
+byte type1 :IN
+ Display format
+ IN_MODE: For input
+ DISP_MODE: For display
+ DISP_YM: Year-Month
+ DISP_MY: Month-Year
+ IN_YM: Year-Month input
+byte F_Type :IN
+ Font type
+@\CReturn values
+If a touch area other than the keyboard area is touched, this function returns KEY_NONE.
+@\CDescription
+Edits the date buffer using the Calendar keyboard.
+This function uses the Calendar keyboard to update the date buffer specified by "db".
+The function also displays the date at specified coordinates at the same time.
+@\TLibGetCursor
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibGetCursor(
+ int *c_xp,
+ int *c_yp,
+ int *c_xsize,
+ int *c_ysize)
+@\CArguments
+int *c_xp  :OUT
+ Coordinate - Horizontal
+int *c_yp  :OUT
+ Coordinate - Vertical
+int *c_xsize :OUT
+ Horizontal size
+int *c_ysize :OUT
+ Vertical size
+@\CReturn values
+bool Blink/No blink
+ TRUE : ON Being ON with LibCurBlnkOn().
+ HALF : ON Being ON with LibCurBlnkOn2().
+ FALSE: OFF
+@\CDescription
+Gets the cursor status.
+@\TLibGetCursorPos
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibGetCursorPos(
+ int x,
+ int y,
+ LPTIMEKEYBCTRL lptbl)
+@\CArguments
+int x  :IN
+ X-coordinate of touch position
+int y  :IN
+ Y-coordinate of touch position
+LPTIMEKEYBCTRL lptbl :IN
+ Time array
+@\CReturn values
+int Cursor position
+@\CDescription
+Gets the initial value of the time-input cursor from the touch position.
+@\TLibGetDailyAlarm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetDailyAlarm(
+ char *tbp)
+@\CArguments
+char *tbp  :OUT
+ Time buffer
+@\CReturn values
+None
+@\CDescription
+Gets a daily alarm time.
+@\TLibGetDataCond
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibGetDataCond(
+ void)
+@\CArguments
+None
+@\CReturn values
+bool Inspection result
+ TRUE : Normal
+ FALSE: Abnormal
+@\CDescription
+Checks the FLASH data status.
+@\TLibGetDate
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetDate(
+ byte *yearh,
+ byte *yearl,
+ byte *month,
+ byte *day)
+@\CArguments
+byte *yearh :OUT
+ Year high
+byte *yearl :OUT
+ Year low
+byte *month :OUT
+ Month
+byte *day :OUT
+ Day
+@\CReturn values
+The day of the week
+@\CDescription
+Gets the current date in the BCD format.
+No summer time correction.
+@\TLibGetDate2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetDate2(
+ word *year2,
+ byte *month2,
+ byte *day2)
+@\CArguments
+word *year2 :OUT
+ Year
+byte *month2 :OUT
+ Month
+byte *day2 :OUT
+ Day
+@\CReturn values
+The day of the week
+@\CDescription
+Gets the current date in the numeric format.
+No summer time correction.
+@\TLibGetDateTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetDateTime(
+ byte *yearh,
+ byte *yearl,
+ byte *month,
+ byte *day,
+ byte *hour,
+ byte *minute,
+ byte *second)
+@\CArguments
+byte *yearh :OUT
+ Year high
+byte *yearl :OUT
+ Year low
+byte *month :OUT
+ Month
+byte *day :OUT
+ Day
+byte *hour :OUT
+ Hour
+byte *minute :OUT
+ Minute
+byte *second :OUT
+ Second
+@\CReturn values
+The day of the week
+@\CDescription
+Gets the current date/time in the BCD format.
+Summer time (Daylight saving time) correction is provided.
+@\TLibGetDateTime2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetDateTime2(
+ word *year2,
+ byte *month2,
+ byte *day2,
+ byte *hour2,
+ byte *minute2,
+ byte *second2)
+@\CArguments
+word *year2 :OUT
+ Year
+byte *month2 :OUT
+ Month
+byte *day2 :OUT
+ Day
+byte *hour2 :OUT
+ Hour
+byte *minute2 :OUT
+ Minute
+byte *second2 :OUT
+ Second
+@\CReturn values
+The day of the week
+@\CDescription
+Gets the current date/time in the numeric format.
+Summer time (Daylight saving time) correction is provided.
+@\TLibGetDateTimeM
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetDateTimeM(
+ byte *d_data)
+@\CArguments
+byte *d_data :OUT
+ Year,
+ month,
+ day,
+ hour,
+ minute,
+ second [7]
+@\CReturn values
+The day of the week
+@\CDescription
+Gets the current date/time in the BCD format.
+Summer time (Daylight saving time) correction is provided.
+@\TLibGetDays
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetDays(
+ word *buf)
+@\CArguments
+word *buff :IN
+ Year-Month buffer [2] Numeric format
+@\CReturn values
+Number of days
+@\CDescription
+Gets the number of days of the month from the year and month specified in "buff".
+@\TLibGetDLAllNum
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+word LibGetDLAllNum(
+ byte part)
+@\CArguments
+byte part :IN
+ IB_DLALL_COUNT (Program AND Data)
+ IB_DLPROG_COUNT (Program Only)
+ IB_DLDATA_COUNT (Data Only)
+@\CReturn values
+word Total number(0= not download)
+@\CDescription
+Gets total number of download program and data.
+@\TLibGetDow
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetDow(
+ byte *buff)
+@\CArguments
+byte *buff :IN
+ Date buffer [8] ASCII format
+@\CReturn values
+The day of the week
+0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+@\CDescription
+Gets the day of the week from the date specified in "buff".
+@\TLibGetEL
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetEL(
+ void)
+@\CArguments
+None
+@\CReturn values
+byte  State
+ IB_ELP_OFF: Turns OFF.
+ IB_ELP_ON : Turns ON.
+@\CDescription
+Gets the EL-panel status.
+@\TLibGetFileCnt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibGetFileCnt(
+ FILE_BUF *fd)
+@\CArguments
+FILE_BUF *fb  :IN
+ File buffer
+@\CReturn values
+word Number of records
+@\CDescription
+Gets the number of records registered in the FLASH memory.
+The number of records to obtain is in the following units:
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number
+ fb->fsb_scrt_info_: Secret zone
+ fb->fsb_todo_chek_: TODO check information *sub-mode ToDo only
+ fb->fsb_todo_rank_: TODO rank information *sub-mode ToDo only
+@\TLibGetFileInfo
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGetFileInfo(
+ FILE_BUF *fd,
+ FILE_INFO *fi)
+@\CArguments
+FILE_BUF *fb  :OUT
+ File buffer
+FILE_INFO *finf :IN
+ File information
+@\CReturn values
+None
+@\CDescription
+Gets the file information.
+Reads the header information from the data pointer specified by "fi->fp", and then outputs it to the following members of "fd".
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number
+ fb->fsb_scrt_info_: Secret zone
+ fb->fsb_ararm_chk_: Alarm check information
+ fb->fsb_todo_chek_: TODO check information
+ fb->fsb_todo_rank_: TODO rank information
+@\TLibGetFlash
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibGetFlash(
+ void)
+@\CArguments
+None
+@\CReturn values
+Total capacity
+@\CDescription
+Gets the total capacity of the FLASH memory.
+@\TLibGetFreeBlock
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibGetFreeBlock(
+ void)
+@\CArguments
+None
+@\CReturn values
+Free blocks
+@\CDescription
+Gets the number of free blocks of the FLASH memory.
+@\TLibGetGraph
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGetGraph(
+ int x,
+ int y,
+ int xsize,
+ int ysize,
+ byte far *ubfptr)
+@\CArguments
+int x  :IN
+ Start coordinate - Horizontal
+int y  :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Read area - Width
+int ysize :IN
+ Read area - Height
+byte far *ubfptr :OUT
+ Read buffer
+@\CReturn values
+None
+@\CDescription
+Gets data for the rectangular area from the VRAM.
+This function gets VRAM data for a size specified by "xsize" and "ysize" starting from the coordinate specified by (x, y).
+The data format gotten by this function is the same as that specified by LibPutGraph family.
+This function makes it possible to save data.
+@\TLibGetKeyKind
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetKeyKind(
+ void)
+@\CArguments
+None
+@\CReturn values
+Keyboard-layout type
+ IB_QWERTY: QWERTY layout
+ IB_AZERTY: AZERTY layout
+ IB_QWERTZ: QWERTZ layout
+@\CDescription
+Gets the keyboard layout type.
+@\TLibGetKeyM
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibGetKeyM(
+ TCHSTS *tsts)
+@\CArguments
+TCHSTS *tsts  :OUT
+ Touch status information
+@\CReturn values
+Character code If a touch area other than the keyboard area is touched, this function returns KEY_NONE.
+@\CDescription
+Waits for touching of the generic keyboard.
+This function returns a character code selected on the keyboard.
+This function also controls changing/displaying the keyboard type when any of the SHIFT, CAPS, CODE, and SMBL keys is pressed.
+@\TLibGetLang
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetLang(
+ void)
+@\CArguments
+None
+@\CReturn values
+byte Language information
+ IB_DEUTSCH: German
+ IB_ENGLISH: English
+ IB_ESPANOL: Spanish
+ IB_FRANCAIS: French
+ IB_ITALIANO: Italian
+@\CDescription
+Gets the current language information of the system.
+@\TLibGetLangInf
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetLangInf(
+ void)
+@\CArguments
+None
+@\CReturn values
+byte Language support information
+IB_LANG_ENGLISH: A single language version. (English only)
+Others: 5-language version
+@\CDescription
+Gets the information whether the current ROM model is the single language version or the 5-language version.
+@\TLibGetLastMode
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGetLastMode(
+ word *m_code,
+ word *m_sts,
+ word *m_seg,
+ word *m_ofs)
+@\CArguments
+word *m_code :OUT
+ Mode code
+  High-order: Main mode
+  Low-order: Sub mode
+word *m_sts :OUT
+ Mode status
+word *m_seg :OUT
+ Segment information
+word *m_ofs :OUT
+ Offset information/data pointer
+@\CReturn values
+None
+@\CDescription
+Gets the previous mode information (last time only).
+@\TLibGetLibVer
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibGetLibVer(
+ byte *ver_str,
+ byte main_code,
+ byte sub_code);
+@\CArguments
+byte *ver_str  :OUT
+ Pointer of library version buffer(17bytes)
+byte main_code :IN
+ Main mode Code
+byte sub_code  :IN
+ Sub mode code
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Not corresponding
+@\CDescription
+Gets the library version which was linked together in the specified mode.
+Version buffer is cleared in NULL when there is no specified mode.
+String format:
+ Example) "1999101015300100"
+ 19991018=Date (=1999/10/18)
+ 1530=Time (=15:30)
+ 0100=Version number (=1.00)
+@\CNote
+Prepare the array which stores a version character string.
+@\TLibGetListIcon
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibGetListIcon(
+ byte far **graph_addr,
+ byte main_code,
+ byte sub_code)
+@\CArguments
+byte far **graph_addr :OUT
+ Pointer of list icon graphics
+byte main_code :IN
+ Main mode Code
+byte sub_code  :IN
+ Sub mode code
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Not corresponding
+@\CDescription
+Gets icon graphics.
+Graphics format:
+ {
+  X dot size(word) , Y dot size(word),
+  data of 1 line(byte),
+  data of 2 line(byte),
+   :
+  data of n line(byte)
+ }
+@\TLibGetMenuIcon
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibGetMenuIcon(
+ byte far **graph_addr,
+ byte main_code,
+ byte sub_code)
+@\CArguments
+byte far **graph_addr :OUT
+ Pointer of menu icon graphics
+byte main_code :IN
+ Main mode Code
+byte sub_code  :IN
+ Sub mode code
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Not corresponding
+@\CDescription
+Gets icon graphics.
+Graphics format:
+ {
+  X dot size(word) , Y dot size(word),
+  data of 1 line(byte),
+  data of 2 line(byte),
+   :
+  data of n line(byte)
+ }
+@\TLibGetMessCnt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibGetMessCnt(
+ int mes_no)
+@\CArguments
+int mes_no :IN
+ Message number
+@\CReturn values
+byte Number of message lines
+@\CDescription
+Gets the number of lines of the built-in 5-language message.
+@\TLibGetMode
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGetMode(
+ word *m_code,
+ word *m_sts,
+ word *m_seg,
+ word *m_ofs)
+@\CArguments
+word *m_code :OUT
+ Mode code
+  High-order: Main mode
+  Low-order : Sub mode
+word *m_sts :OUT
+ Mode status
+word *m_seg :OUT
+ Segment information
+word *m_ofs :OUT
+ Offset information/data pointer
+@\CReturn values
+None
+@\CDescription
+Gets various mode information.
+@\TLibGetNextAlm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetNextAlm(
+ ALMAPL *almap,
+ byte ifdel)
+@\CArguments
+ALMAPL *almap :IN/OUT
+ Alarm information table.
+byte ifdel :IN
+ Options
+ 0: Retain current alarm.
+ 1: Delete current alarm.
+@\CReturn values
+None
+@\CDescription
+Gets the next alarm pointer.
+Searches data specified by "almap" for a data that has the next alarm information.
+@\TLibGetProFontSize
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibGetProFontSize(
+ byte type,
+ byte code)
+@\CArguments
+byte type  :IN
+ Display font data type
+ IB_PFONT1 : Normal
+ IB_PFONT2 : Bold
+ IB_PFONT3 : For title
+byte code  :IN
+ Character code
+@\CReturn values
+A character size.
+@\CDescription
+Gets the width of the proportional font.
+@\TLibGetProgramName
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibGetProgramName(
+ byte *name_str,
+ byte main_code,
+ byte sub_code)
+@\CArguments
+byte *name_str  :OUT
+ Pointer of program name buffer(16bytes)
+byte main_code :IN
+ Main mode Code
+byte sub_code  :IN
+ Sub mode code
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Not corresponding
+@\CDescription
+Gets the program name of the specified mode.
+All names of the OS program are output with ffh.
+Name buffer is cleared in NULL when there is no specified mode.
+@\CNote
+Prepare the array which stores a program name.
+@\TLibGetProStrSize
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibGetProStrSize(
+ byte type,
+ byte *string)
+@\CArguments
+byte type  : IN
+ Display font data type
+ IB_PFONT1 : Normal
+ IB_PFONT2 : Bold
+ IB_PFONT3 : For title
+ IB_CG57FONT: 5*7
+byte *string  : IN
+ Character string
+@\CReturn values
+Dot length of string
+@\CDescription
+Gets the size of a proportional font character string.
+This function returns a dot length when a character string specified in "string" is displayed with a font specified in "type".
+@\TLibGetSubEntNum
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibGetSubEntNum(
+ void)
+@\CArguments
+none
+@\CReturn values
+word Results :Total number
+@\CDescription
+Gets total number of the registered file name(Sub-Entry number).
+@\TLibGetSubEntrySt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibGetSubEntrySt(
+ byte *name_str,
+ byte sub_entry)
+@\CArguments
+byte *name_str :OUT
+ Pointer of file name buffer(16bytes)
+byte sub_entry :IN
+ Search Sub-Entry number
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+Gets file name from Sub-Entry number.
+File name buffer is cleared in NULL when the return value is a error.
+The state is output to "SubEntryStat". "SubEntryStat" is global variables.
+Don't specify sub_entry = 0x00.
+@\CNote
+Prepare the array which stores a file name.
+@\TLibGetTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetTime(
+ byte *hour,
+ byte *minute,
+ byte *second)
+@\CArguments
+byte *hour :OUT
+ Hour
+byte *minute :OUT
+ Minute
+byte *second :OUT
+ Second
+@\CReturn values
+None
+@\CDescription
+Gets the current time in the BCD format.
+No summer time correction.
+@\TLibGetTime2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetTime2(
+ byte *hour2,
+ byte *minute2,
+ byte *second2)
+@\CArguments
+byte *hour2 :OUT
+ Hour
+byte *minute2 :OUT
+ Minute
+byte *second2 :OUT
+ Second
+@\CReturn values
+None
+@\CDescription
+Gets the current time in the numeric format. No summer time correction.
+@\TLibGetTotalDay2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+dword LibGetTotalDay2(
+ word year2,
+ byte month2,
+ byte day2)
+@\CArguments
+word year2 :IN
+ Year
+byte month2 :IN
+ Month
+byte day2 :IN
+ Day
+@\CReturn values
+Total number of days
+@\CDescription
+Gets the total number of days from the specified Year-Month-Day (numeric format).
+@\TLibGetUserMode
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetUserMode(
+ word *mode_code,
+ word *status,
+ byte condition)
+@\CArguments
+word *mode_code :OUT
+ Mode Code
+word *status :OUT
+ Status
+byte condition :IN
+ IB_DLFIRST_SRCH (first search)
+ IB_DLNEXT_SRCH (next search)
+@\CReturn values
+None
+@\CDescription
+Gets mode-code and status.
+The search ends if mode_code is 0xffff.
+Do the next search after the first search.
+@\CNote
+@\TLibGetVersion
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGetVersion(
+ byte *ver_str)
+@\CArguments
+byte *ver_str  :OUT
+ Version string [12+1]
+@\CReturn values
+None
+@\CDescription
+Gets the ROM version.
+Outputs the ROM creation date/time to the buffer specified by "ver_str" in ASCII format string.
+@\TLibGetWinMessSize
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibGetWinMessSize(
+ int mes_no,
+ byte w_pos,
+ byte b_cnt,
+ int *y,
+ int *y_size)
+@\CArguments
+int mes_no :IN
+ Message number
+byte w_pos :IN
+ Window display position
+ 0x00: Bottom of screen
+ IX_MWIN_CENTER: Center of screen
+byte b_cnt :IN
+ Number of buttons(0 -2)
+int *y :OUT
+ Window abscissas
+int *y_size :OUT
+ Window vertical size
+@\CReturn values
+None
+@\CDescription
+Gets the window position and size for the message dialog.
+@\TLibGrpDwn
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGrpDwn(
+ int x,
+ int y,
+ int xsize,
+ int ysize,
+ int dw_size)
+@\CArguments
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+int xsize :IN
+ Size - Width
+int ysize :IN
+ Size - Height
+int dw_size :IN
+ Scroll down size
+@\CReturn values
+None
+@\CDescription
+Scrolls down the rectangular area.
+This function scrolls down a specified coordinate and a size with an amount specified in "dw_size".
+@\TLibGrphUpSideDown
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGrphUpSideDown(
+ byte *gw,
+ const byte *gs)
+@\CArguments
+byte  *gw :OUT
+ Write buffer after flipping.
+const byte *gs :IN
+ Flipping source buffer.
+@\CReturn values
+None
+@\CDescription
+Flips graphic data specified by "gs" vertically, and write the data to "gw".
+@\TLibGrpUp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibGrpUp(
+ int x,
+ int y,
+ int xsize,
+ int ysize,
+ int up_size)
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+int xsize :IN
+ Size - Width
+int ysize :IN
+ Size - Height
+int up_size :IN
+ Scroll up size
+@\CReturn values
+None
+@\CDescription
+Scrolls up the rectangular area.
+This function scrolls up a specified coordinate and a size with an amount specified in "up_size".
+@\TLibIconClick
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibIconClick(
+ const T_ICON far *icon,
+ const TCHSTS *tsts)
+@\CArguments
+const T_ICON far *icon :IN
+ Icon information
+const TCHSTS *tsts :IN
+ Touch status information
+@\CReturn values
+Icon touch
+ TRUE : Touched.
+ FALSE: Not touched.
+@\CDescription
+Controls touching of the icon information.
+This function determines touching of the icon information specified by "icon".
+If a touch occurs, the function highlights (blinks) the icon instantaneously and returns TRUE.
+The highlighted display may depend on the style specified by "icon->kind".
+Execution of LibPutDisp() is not necessary since data is transferred (locally) to D/D internally.
+@\CNote
+A timing to become TRUE is immediately after the ACT_BREAK_IN action.
+ACT_MOVE_OUT will not bring TRUE.
+Thus, it is after generating two actions (at least). (ACT_MAKE and ACT_BREAK_IN)
+@\TLibIconClick2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibIconClick2(
+ const T_ICON far *icon,
+ const TCHSTS *tsts)
+@\CArguments
+const T_ICON far *icon :IN
+ Icon information
+const TCHSTS *tsts :IN
+ Touch status information
+@\CReturn values
+Icon touch
+ TRUE : Touched.
+ FALSE: Not touched.
+@\CDescription
+Controls touching of the icon information.
+This function determines touching of the icon information specified by "icon".
+If a touch occurs, the function highlights the icon instantaneously and returns TRUE.
+The reverse of the icon size is performed without referring a style specified in "icon->kind".
+This is used for clicking a non-shadow icon. The operation is the same with LibIconClick().
+@\TLibIconMoveDown
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibIconMoveDown(
+ byte far *inbuf,
+ byte *workbuf,
+ byte kind)
+@\CArguments
+byte far *inbuf :IN
+ Graphic pattern for reverse.
+byte *workbuf :IN
+ Work buffer
+byte kind :IN
+ Icon type
+@\CReturn values
+None
+@\CDescription
+Provides the pressed appearance to the icon. (Sunken state)
+@\TLibIconMoveUp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibIconMoveUp(
+ byte far *inbuf,
+ byte *workbuf,
+ byte kind)
+@\CArguments
+byte far *inbuf :IN
+ Graphic pattern for reverse.
+byte *workbuf :IN
+ Work buffer
+byte kind :IN
+ Icon type
+@\CReturn values
+None
+@\CDescription
+Provides the up-transition appearance to the icon. (An appearance for the icon released from the pressed state.)
+@\TLibIconPrint
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibIconPrint(
+ const T_ICON far *icon)
+@\CArguments
+const T_ICON far *icon :IN
+ Icon information
+@\CReturn values
+None
+@\CDescription
+Displays an icon.
+This function displays an icon based on the icon information specified by "icon".
+@\CNote
+This function does not perform data transfer to D/D. Therefore, newly set data is not displayed
+actually (invalid) unless LibPutDisp is executed.
+@\TLibIconPrintM
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibIconPrintM(
+ const T_ICON far *icon)
+@\CArguments
+const T_ICON far *icon :IN
+ Icon information
+@\CReturn values
+None
+@\CDescription
+Displays an icon with shading.
+Displays the shaded icon based on the icon information specified by "icon".
+@\CNote
+The current VRAM data is not shaded. Be sure to set "icon->ngp" (normal graphic pattern).
+As touching is not invalid, so it is necessary to invalid it in your application.
+This function does not perform data transfer to D/D.
+Therefore, newly set data is not displayed actually (invalid) unless LibPutDisp() is executed.
+@\TLibIconPrintR
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibIconPrintR(
+ const T_ICON far *icon)
+@\CArguments
+const T_ICON far *icon :IN
+ Icon information
+@\CReturn values
+None
+@\CDescription
+Performs the reverse display of the icon.
+Displays the reverse icon based on the icon information specified by "icon", or reverses the specified rectangular area.
+When NULL is assigned to both "icon->ngp" (normal graphic pattern) and "icon->ngp" (reverse graphic pattern), the current VRAM data is inverted.
+@\CNote
+This function does not perform data transfer to D/D.
+Therefore, newly set data is not displayed actually (invalid) unless LibPutDisp() is executed.
+@\TLibInitAlarm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibInitAlarm(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Releases the alarm setting.
+@\TLibInitAlarmFlg
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibInitAlarmFlg(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Clears the alarm match flag.
+@\TLibInitAlarmFlgCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibInitAlarmFlgCheck(
+ void)
+@\CArguments
+None
+@\CReturn values
+Inspection result
+ TRUE : Matched.
+ FALSE: Unmatched.
+@\CDescription
+Checks if the alarm is matched.
+@\TLibInitDisp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibInitDisp(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Initializes the origin of the LCD text coordinate.
+@\CNote
+This system does not use data for the text coordinate system. Thus it is not necessary to execute this function.
+@\TLibInputTerm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibInputTerm(
+ TCHSTS *tsts,
+ LPTIMEKEYBCTRL lpstbl,
+ LPTIMEKEYBCTRL lpetbl)
+@\CArguments
+TCHSTS *tsts  :IN/OUT
+ Touch status information
+LPTIMEKEYBCTRL lpstbl :IN
+ Time array(start time)
+LPTIMEKEYBCTRL lpetbl :IN
+ Time array(end time)
+@\CReturn values
+word Key code and time software keyboard control structure.
+Internal variable (This is the same as LibInputTime.)
+@\CDescription
+Outputs the time bar keyboard only for term input, and performs the general processing of term input.
+* Similar to the LibInputTime, it is possible that the keyboard is closed without turning off the cursor.
+So, be sure that the cursor is always turned off when closing the keyboard (specification).
+@\TLibInputTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibInputTime(
+ TCHSTS *tsts,
+ LPTIMEKEYBCTRL lptbl,
+ bool IsDispKeyb)
+@\CArguments
+TCHSTS *tsts :IN/OUT
+ Touch status information
+LPTIMEKEYBCTRL lptbl :IN/OUT
+ Edit target time data buffer
+bool IsDispKeyb :IN
+ Draw/not draw a keyboard background.
+ TRUE: Draw.
+ FALSE: Not draw.
+@\CReturn values
+word Status and key code
+BIT15 Guidance display for "1"
+BIT14 to 12 Undefined
+BIT8 to 11 (4 bits)
+ CLKKEYB_RSLT_NONE: NO EVENT
+ CLKKEYB_RSLT_NEXTITEM: Performed a Minute setting.
+ CLKKEYB_RSLT_PREVITEM: The left key was pressed when the cursor was at "0".
+ CLKKEYB_RSLT_OUTOFKEYB: The invalid area was touched.
+ CLKKEYB_RSLT_KEYBSWAP: The time bar switch button was touched.
+BIT0 to 7
+ The virtual key code (CLKKEY_XXX) (See define.h)
+@\CDescription
+Sets the time to the specified time array.
+Exceeding the range, moving to next item, or touching to the time bar exits the processing.
+The input value is five-byte character string in 'HHMMA' format (System time expression) ('A'(a) is entered to A for AM (morning), 'P'(p) is entered to A for PM.
+This "A" has no mean when it is 24 hours format.)
+When it is displayed, the appropriate format following to the system settings is used.
+The selection of AM/am is automatically performed depending on the state of the 5-th byte.
+1) User has to initialize (IsDispKeyb=TRUE, any others) xsp, ysp, xep, yep, font, csrpos when calling them first time.
+ At this time, LibGetTime displays a keyboard at specified position, moves a cursor to the position specified by "csrpos", and enters the edit state.
+ When IsDispKeyb=FALSE,the process is performed as the keyboard graphics exist.
+2) When entering this main process, lptbl->timbuf is not initialized.
+ So, it is necessary to set the appropriate character string when initializing.
+3) Using LibChkTime, you can check if this character string is a correct time.
+ The decision to close the keyboard has to be done by user application.
+ So, arrange a judgment for closing the keyboard in the application according to the specification.
+4) Each time when calling this keyboard, the current cursor position is returned to "csrpos" member of this structure.
+ When it is "-1", the keyboard will not be displayed.
+5) Event occurrence
+ The occurrence condition of NEXTITEM(PREVITEM) by the result returned from LibInputTime is as follow.
+  Right key or a numeric key is pressed when the cursor locates at right edge of the minute item.
+  Left key is pressed when the cursor locates at left edge of the hour item.
+  NEXT key is pressed when the cursor locates at the minute item. (NEXTITEM only)
+  In the preset specification, when Right/Left key is pressed while the cursor locates at an edge of the minute item,it results NOP.
+  However, be sure that it always issues the event mentioned above and steps out from the function in order to maintain the generality of the library.
+  Therefore, the caller should refer the escaping key information (low-order 8-bit of the result) and manipulate whether making it NOP or not.
+  The cursor can be controlled by existprevitem/existnextitem.
+If making them TRUE, the cursor is turned off when stepping out from this library with CLKKEYB_RSLT_NEXTITEM/PREVITEM.
+* About cursor display
+It is possible that the keyboard is closed without turning off a cursor.
+So, be sure that the cursor is always turned off when closing the keyboard (specification).
+Internal variables csrpos: This is a member to indicate a cursor position.
+This cursor position does not correspond exactly to the actual cursor display, but it corresponds in the character string 'HHMMA'.
+(That is, ":" is not included in the calculation.)
+The last "A" is used only to display the input board AM/PM.
+If the hardware icon "Menu Bar" is touched during this process, the menu bar process is performed internally and never goes back to higher order (not exit the process).
+Thus, it is not possible to assign the specific functions that correspond to the menu bar.
+@\TLibInputTimeBar
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibInputTimeBar(
+ TCHSTS *tsts,
+ LPTIMEKEYBCTRL lpstbl,
+ LPTIMEKEYBCTRL lpetbl)
+@\CArguments
+TCHSTS *tsts   :IN/OUT
+ Touch status information
+LPTIMEKEYBCTRL lpstbl :IN
+ Time array(start time)
+LPTIMEKEYBCTRL lpetbl :IN
+ Time array(end time)
+@\CReturn values
+word Key code and time software keyboard control structure.
+Internal variable (This is the same as LibInputTime.)
+@\CDescription
+Outputs a time bar keyboard only for the term input, and performs the term input.
+Basically, the input parameters are the same as LibInputTime.
+Though two structures are used since this is for the term input.
+1) Handling of cursor coordinate
+ The structure's value for a start point is only valid as a cursor coordinate.
+ The position of the start point can be 0 to 3, and the end point can be 4 to 7.
+ LibInputTimeBar refers lpstbl->csrpos and outputs a cursor to that position.
+ The cursor position after setting can be write and back to both start point structure and end point structure.
+ (However, only the cursor position for the start point side is referred when calling.)
+ Therefore, when closing TimeBar once and outputting the time input keyboard again, the cursor position has to be corrected and called.
+ (When exceeding the range, "0" position is output as default.)
+2) Time bar management member
+ LibInputTimeBar manages the time bar status separately from timbuf because of the specification of PV.
+ For this management, two members, barpos and barshift, are used.
+ When the bar is not displayed on the screen, both lpstbl->barpo and lpetbl->barpos take a "-1", and the value is finalized by dragging the bar.
+ (The start position is lpstbl->barpos, and the end position is lpetbl->barpos.)
+ Therefore, first time when calling this function, set those two parameters to "-1" before calling the function.
+ Then, the time bar input board is displayed without displaying the time bar.
+ (However, even either is "-1", it is illegal. So the display will not be performed.)
+ The barshift indicates the shift status of the bar; left, center or right.
+ "1" is for Center, "0" is for Left (earlier), and "2" is for Right (later) respectively.
+ Set this to "1" for the first opening.
+ The barshift for the start point side is also referred.
+3) Event occurrence
+ The occurrence condition of NEXTITEM (PREVITEM) by the result returned from LibInputTimebar is as follow:
+ A numeric key is pressed when the cursor locates at an edge of the minute item.
+ NEXT key is pressed when the cursor locates at the minute item. (NEXTITEM only)
+ In the present specification, it specifies that the cursor does not move but the relevant column is rewritten when pressing a numeric key while the cursor locates at an edge of the minute item.
+ However, be sure that it always issues the event mentioned above and steps out from the function in order to maintain the generality of the library.
+ Because of this, the caller has to proceed whether returning the control again or not.
+ It is possible to perform a branch judgement using the escaping key types stored in the low-order 8-bit of the result.
+ At that time, the cursor can be controlled by existprevitem/existnextitem.
+  * Similar to the LibInputTime, it is possible that the keyboard is closed without turning off the cursor.
+    So, be sure that the cursor is always turned off when closing the keyboard (specification).
+* existnextitem member
+ This value is automatically set to lpstbl->existnextitem=FALSE/lpetbl->existprevitem=FALSE when this function is called.
+ (When moving both items, the cursor is kept outputting.)
+ The movement of lpstbl->lpetbl between the items is automatically performed in the library.
+ When the cursor moves to lpstbl -> lpetbl, the NEXTITEM event is generated.
+ The cursor position at that time is automatically moved to the tens digit of the hour item of lpetbl.
+ If the hardware icon "Menu Bar" is touched during this process, the menu bar process is performed internally and never goes back to higher order (not exit the process).
+ Thus, it is not possible to assign the specific functions that correspond to the menu bar.
+@\TLibJumpDate
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibJumpDate(
+ byte *s_date)
+@\CArguments
+byte *s_date :IN/OUT
+ Date buffer [8]
+@\CReturn values
+bool Execution result
+ TRUE : Rewrite
+ FALSE: None
+ HALF : Schedule hardware-icon is touched.
+@\CDescription
+Displays the date jump screen and changes the contents in the buffer specified by "s_date[]" using the Calendar keyboard.
+@\TLibJumpMenu
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibJumpMenu(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Calls the MENU mode.
+@\TLibKeyInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibKeyInit(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Initializes the generic keyboard.
+This function must be executed immediately before using the generic keyboard.
+@\TLibKeyWordFSrch
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibKeyWordFSrch(
+ byte *srch_str,
+ byte *key_str)
+@\CArguments
+byte *srch_str :IN
+ String buffer for search
+byte *key_str :OUT
+ String buffer for search result
+@\CReturn values
+Execution result TRUE:
+ Match data presents.
+FALSE: None
+@\CDescription
+Performs the first search to find a character string specified by "srch_str".
+If the relevant keyword is found, this function writes it to "key_str".
+If no matching keyword is found, this function writes NULL to the start address of "key_str".
+@\TLibKeyWordInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibKeyWordInit(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Initializes the keyword registration area.
+@\TLibKeyWordNSrch
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibKeyWordNSrch(
+ byte *srch_str,
+ byte *key_str)
+@\CArguments
+byte *srch_str :IN
+ String buffer for search
+byte *key_str :OUT
+ String buffer for search result
+@\CReturn values
+Execution result
+ TRUE : Has match data.
+ FALSE: No match data.
+@\CDescription
+Performs the next search to find a character string specified by "srch_str".
+If the matching keyword is found, this function writes the character into "key_str".
+This function writes NULL at the start address of "key_str" if no matching keyword is found.
+@\CNote
+Call this after executing the first search LibKeyWordFSrch().
+@\TLibKeyWordSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibKeyWordSet(
+ byte *key_str)
+@\CArguments
+byte *key_str :IN
+ Keyword string
+@\CReturn values
+None
+@\CDescription
+Registers a character string specified by "key_str" in the keyword area.
+At this time, if the internal area is full, data is deleted from the oldest one automatically.
+@\TLibKeyWordSrchSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibKeyWordSrchSub(
+ byte sw,
+ byte *srch_str,
+ byte *key_str)
+@\CArguments
+byte sw  :IN
+ Search switch
+IB_KEYWD_FSRCH: First search
+IB_KEYWD_NSRCH: NEXT
+byte *srch_str :IN
+ String buffer for search
+byte *key_str  :OUT
+ String buffer for search result
+@\CReturn values
+Execution result
+ TRUE : Has match data.
+ FALSE: No match data.
+@\CDescription
+Performs a search with the search type specified by "sw" to find the character string specified by "srch_str".
+If the matching keyword is found, this function writes the character string into "key_str".
+This function writes NULL at the start address of "key_str" if no matching keyword is found.
+@\TLibLblAreaRead
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLblAreaRead(
+ byte *fb,
+ byte typ)
+@\CArguments
+byte *fb :OUT
+ Label content buffer
+byte typ :IN
+ Type
+ 00H to 04H = Contacts: 197-Byte/Block
+ 05H to 09H = Memo: 15-Byte/Block
+@\CReturn values
+None
+@\CDescription
+Gets the registered label contents of the CONTACTS mode.
+@\TLibLblAreaWrite
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLblAreaWrite(
+ byte *fb,
+ byte typ)
+@\CArguments
+byte *fb :IN
+ Label content buffer
+byte typ :IN
+ Types
+ 00H to 04H = Contacts: 197-Byte/Block
+ 05H to 09H = Memo: 15-Byte/Block
+@\CReturn values
+None
+@\CDescription
+Registers the label contents of the CONTACTS mode.
+@\TLibLFileCorect
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileCorect(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ byte type)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer(LibLFileCorect)
+FILE_INFO *finf :IN
+ File information
+byte type :IN
+ Type
+  0: Normal correction
+  1: Corrects without changing the pointer.
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Writes the change of the data pointer to the FLASH memory with the option specification.
+This function writes the contents in the buffer "fb" to the data pointer specified by "finf->fp".
+When "type" is set to "1", the data pointer does not change.
+If the function fails to write data, it returns FALSE.
+@\CNote
+Supports only for correction.
+The normal operation of this function can be performed only for some limited modes such as SCHEDULE mode.
+See the BIOS document when using a mode with this function.
+Normally, LibFileWrite() should be used.
+@\TLibLFileExch
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileExch(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ const word mvp)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+const word mvp :IN
+ Destination data pointer
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Moves the pointer data specified by "finf->fp" to the "mvp" pointer. The data following to "mvp" are shifted one toward next direction.
+@\TLibLFileFindNext
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileFindNext(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+LFILE_BUF far *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte  search :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ FALSE: No data.
+@\CDescription
+Searches for next data.
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the next direction based on the search conditions.
+If next data is found, the function updates "finf->fp", and returns TRUE.
+When 0xffff is set to "finf->fp", searches for data from the beginning.
+When 0xfffe is set to "finf->fp", searches for the last data.
+@\TLibLFileFindNextExt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileFindNextExt(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+LFILE_BUF far *fb :IN/OUT
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte  search :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ HALF : Has data but not perfect match.
+ FALSE: No data.
+@\CDescription
+Searches for next data. (For extension.)
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the next direction based on the search conditions.
+If next data is found, the function updates "finf->fp", and then returns TRUE.
+When 0xffff is set to "finf->fp", searches for data from the beginning.
+When 0xfffe is set to "finf->fp", searches for the last data.
+Differently from LibFileFindNext(), this function also supports data other than the perfect matching data.
+@\TLibLFileFindPrev
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileFindPrev(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+LFILE_BUF far *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte search :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ FALSE: No data.
+@\CDescription
+Searches for previous data.
+Performs the data search from the current data pointer on FLASH specified by "finf->fp" to the previous direction based on the search conditions.
+If previous data is found, the function updates "finf->fp", and then returns TRUE.
+@\TLibLFileRead
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileRead(
+ LFILE_BUF far *fb,
+ const FILE_INFO *finf)
+@\CArguments
+LFILE_BUF far *fb :IN/OUT
+ File buffer
+const FILE_INFO *finf :IN
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Reads data from the FLASH memory.
+This function reads FLASH memory data from the data pointer specified by "finf->fp" and sets it in the buffer specified by "fb".
+Position in the buffer may vary depending on the mode/sub-mode.
+@\TLibLFileReadEx
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileReadEx(
+ LFILE_BUF far *fb,
+ const FILE_INFO *finf,
+ int maxblock)
+@\CArguments
+const LFILE_BUF far *fb :IN/OUT
+ File buffer
+FILE_INFO  *finf :IN
+ File information
+Int  maxblock :IN
+ The number of the blocks to read
+ (maxblock >= 1)
+@\CReturn values
+bool Result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+It reads specification block number data from FLASH.
+@\CNote
+The size of 1block is defined in "FILE_BLOCK_SIZE".
+@\TLibLFileRemove
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileRemove(
+ const LFILE_BUF far *fb,
+ const FILE_INFO *finf)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer
+const FILE_INFO *finf :IN
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Deletes data (1 record) in the FLASH memory.
+Deletes data of the data pointer specified by "finf->fp".
+@\CNote
+"fb" in the first argument is not used.
+@\TLibLFileRemoveAll
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileRemoveAll(
+ const LFILE_BUF far *fb)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Deletes all data (multiple data) in the FLASH memory.
+Deletes all data specified by "fb->main_entry, and fb->sub_entry" in units of modes/sub-modes.
+@\CNote
+Be sure to set the following information.
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number (All data when 0x00)
+ fb->fsb_scrt_info_: Secret zone
+This will not delete both Secret and Open modes. Only an area specified by "fb->scrt_info" is a target.
+@\TLibLFileWrite
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileWrite(
+ const LFILE_BUF far *fb,
+ FILE_INFO *finf)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+@\CReturn values
+bool Result
+ TRUE : Normal
+ FALSE: Error
+@\CDescription
+Writes data to the FLASH memory.
+This function writes the contents in the buffer specified by "fb" to the data pointer specified by "finf->fp", and then sets a new data pointer to "finf->fp".
+If 0xffff is set to "finf->fp", data is registered newly.
+If the function fails to write data, it returns FALSE.
+@\CNote
+When writing data to the FLASH memory, the data pointer changes even if it is just a correction of existing data.
+Therefore, if the data pointer is held in buffer such as list buffer, the changed finf->fp after calling this function must be reflected.
+@\TLibLFileWriteCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLFileWriteCheck(
+ const LFILE_BUF far *fb)
+@\CArguments
+const LFILE_BUF far *fb :IN
+ File buffer
+@\CReturn values
+bool Result
+ TRUE : Write enabled.
+ FALSE: Write disabled.
+@\CDescription
+Checks whether data can be written to the FLASH memory.
+Normally it is required to execute LibFileWrite() for checking the FLASH memory full.
+However, it is possible to check it using this function in advance.
+Examines whether the buffer data specified by "*fb" can be written using LibFileWrite().
+@\CNote
+Be sure to execute LibFileWriteCheckInit() immediately before using this function.
+The normal operation of this function can be performed only for some limited modes such as EXPENSE mode.
+See the BIOS document when using the mode with this function.
+@\TLibLGetFileCnt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibLGetFileCnt(
+ LFILE_BUF far *fd)
+@\CArguments
+LFILE_BUF far *fb :IN
+ File buffer
+@\CReturn values
+word Number of records
+@\CDescription
+Gets the number of records registered in the FLASH memory. The number of records to obtain is in the following units:
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number
+ fb->fsb_scrt_info_: Secret zone
+ fb->fsb_todo_chek_: TODO check information *sub-mode ToDo only
+ fb->fsb_todo_rank_: TODO rank information *sub-mode ToDo only
+@\TLibLGetFileInfo
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLGetFileInfo(
+ LFILE_BUF far *fd,
+ FILE_INFO *fi)
+@\CArguments
+LFILE_BUF far *fb :OUT
+ File buffer
+FILE_INFO *finf :IN
+ File information
+@\CReturn values
+None
+@\CDescription
+Gets the file information.
+Reads the header information from the data pointer specified by "fi->fp", and then outputs it to the following members of "fd".
+ fb->fsb_main_entry_: Mode number
+ fb->fsb_sub_entry_: Sub-mode number
+ fb->fsb_scrt_info_: Secret zone
+ fb->fsb_ararm_chk_: Alarm check information
+ fb->fsb_todo_chek_: TODO check information
+ fb->fsb_todo_rank_: TODO rank information
+@\TLibLine
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibLine(
+ int x,
+ int y,
+ int xsize,
+ int ysize,
+ byte bold)
+@\CArguments
+int x :IN
+ Start coordinate - Horizontal
+int y :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Border size - width (Min==1)
+int ysize :IN
+ Border size - height (Min==1)
+byte bold :IN
+ Line weight (Min==1)
+@\CReturn values
+byte status
+ 0: Argument error
+ 1: Normal
+@\CDescription
+Draws a border.
+This is used to draw a border with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibLineClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLineClr(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x  :IN
+ Start coordinate - Horizontal
+int y  :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Size to clear - width
+int ysize :IN
+ Size to clear - height
+@\CReturn values
+None
+@\CDescription
+Clears a border.
+This is used to clear a border with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibLineCplmnt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLineCplmnt(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x :IN
+ Start coordinate - Horizontal (Graphic system)
+int y :IN
+ Start coordinate - Vertical (Graphic system)
+int xsize :IN
+ Border size - width
+int ysize :IN
+ Border size - height
+@\CReturn values
+None
+@\CDescription
+Draws a border. (Bit inversion.)
+This is used to draw a border using the bit pattern inversion with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+The VRAM data before drawing is inverted.
+@\CNote
+This function does not perform data transfer to D/D.
+Therefore, newly set data is not displayed actually (invalid) unless LibPutDisp is executed.
+@\TLibLNextSearchCld
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibLNextSearchCld(
+ LFILE_BUF far *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+LFILE_BUF far *fb :IN/OUT
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte search :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ HALF : Has data but not perfect match.
+ FALSE: No data.
+@\CDescription
+Searches for next data. (For Calendar.)
+This function has the same function with LibFileFindNextExt().
+However, when FALSE is returned,finf->fp is destroyed.
+@\TLibLTodoFileRemove
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibLTodoFileRemove(
+ LFILE_BUF far *fd)
+@\CArguments
+LFILE_BUF far *fd :IN
+ File buffer
+@\CReturn values
+None
+@\CDescription
+Deletes TODO data in the Schedule mode.
+@\TLibMenuJump
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibMenuJump(
+ word m_code)
+@\CArguments
+word m_code :IN
+ Mode code
+  High-order: Main mode
+  Low-order: Sub mode
+@\CReturn values
+None
+@\CDescription
+Jumps from the MENU to other mode.
+@\TLibMesh
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibMesh(
+ int px,
+ int py,
+ int xsize,
+ int ysize)
+@\CArguments
+int px :IN
+ Start coordinate - Horizontal
+int py :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Reverse area Width
+int ysize :IN
+ Reverse area Height
+@\CReturn values
+None
+@\CDescription
+Shades a rectangular area.
+This is used to shade the area with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibMeshLine
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibMeshLine(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x  :IN
+ Start coordinate - Horizontal
+int y  :IN
+ Start coordinate - Vertical
+int xsize  :IN
+ Dotted line size - width
+int ysize  :IN
+ Dotted line size - height
+@\CReturn values
+None
+@\CDescription
+Draws a dotted line.
+This is used to draw a dotted line with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibModeJump
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibModeJump(
+ word m_code,
+ byte m_sts)
+@\CArguments
+word m_code :IN
+ Mode code
+  High-order: Main mode
+  Low-order: Sub mode
+byte m_sts :IN
+ Mode status
+@\CReturn values
+Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Jumps to the mode specified by "m_code".
+@\TLibModeRestart
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibModeRestart(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Restarts the current mode. (Performs a mode jump with the current mode code.)
+@\CNote
+Cannot use this in the Dual-Window state. (NOP.) 
+This function cannot be used when the mode start state has the sub-code.
+Because the low-order 8-bit of the mode code is fixed to 0x00.
+@\TLibMoveArea
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibMoveArea(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Moves between Open area and Secret area.
+@\TLibNextAlarmSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibNextAlarmSet(
+ ALMAPL *almap,
+ char type)
+@\CArguments
+ALMAPL *almap :IN/OUT
+ Alarm information table.
+char type :IN
+ Setting types
+@\CReturn values
+Execution result
+ TRUE : Normal end
+ FALSE: Abnormal end (The value set exceeds the input range.)
+@\CDescription
+Sets the next alarm to be sounded.
+@\TLibNextAlmSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibNextAlmSet(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Sets the next alarm.
+Compares the alarm to be sounded next time with near future schedule data and daily alarm times, and sets the pointer.
+This function is called when setting a time and updating schedule data.
+@\TLibNextSearchCld
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibNextSearchCld(
+ FILE_BUF *fb,
+ FILE_INFO *finf,
+ byte search)
+@\CArguments
+FILE_BUF *fb :IN/OUT
+ File buffer
+FILE_INFO *finf :IN/OUT
+ File information
+byte search :IN
+ Search conditions
+@\CReturn values
+bool Result
+ TRUE : Has data.
+ HALF : Has data but not perfect match.
+ FALSE: No data.
+@\CDescription
+Searches for next data. (For Calendar.)
+This function has the same function with LibFileFindNextExt().
+However, when FALSE is returned,finf->fp is destroyed.
+@\TLibNumoStr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibNumToStr(
+ byte *buff,
+ word target,
+ byte j)
+@\CArguments
+byte *buff :OUT
+ Converts to a string
+word target :IN
+ Converts a number
+byte j  :IN
+ Digit
+@\CReturn values
+None
+@\CDescription
+Converts a numeric number specified by "target" into character string.
+@\CNote
+A NULL is not set to the end of the character string.
+@\TLibOpenWindow
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibOpenWindow(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+int xsize :IN
+ Size - Width
+int ysize :IN
+ Size - Height
+@\CReturn values
+Result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Opens a window.
+Opens a window with specified size at specified coordinate.
+@\TLibOpenWindowS
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibOpenWindowS(
+ byte flame,
+ word px,
+ word py,
+ word xsize,
+ word ysize)
+@\CArguments
+byte flame :IN
+ Frame option
+ OFF : No border
+ ON  : With border
+word px  :IN
+ Coordinate - Horizontal
+word py  :IN
+ Coordinate - Vertical
+word xsize  :IN
+ Border size - width
+word ysize  :IN
+ Border size - height
+@\CReturn values
+None
+@\CDescription
+Opens a window with the option specification.
+Opens a window with the specified size and the frame option at specified coordinate.
+@\CNote
+Some of the display system functions require to consider that the origin (0, 0) of the coordinates is upper-left of the window opened by this function.
+Those functions are listed below:
+@\j[LibLine]
+@\j[LibMeshLine]
+@\j[LibGrpUp]
+@\j[LibGrpDwn]
+@\j[LibPutDispBox]
+@\j[LibClrBox]
+@\j[LibBox]
+@\TLibPassChk
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibPassChk(
+ byte far *pass_buf)
+@\CArguments
+byte far *pass_buf :IN
+ Password string
+@\CReturn values
+bool Inspection result
+ TRUE : Password matched.
+ FALSE: Password unmatched.
+@\CDescription
+Checks the password.
+Checks whether the password string specified by "pass_buf" is equal to the registered password.
+@\TLibPassClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibPassClr(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Clears the system password.
+@\TLibPassGet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+int LibPassGet(
+ byte far *pass_buf)
+@\CArguments
+byte far *pass_buf :OUT
+ Output destination password string
+@\CReturn values
+Password string length
+@\CDescription
+Gets the system password.
+Outputs the password string to the string buffer specified by "pass_buf".
+@\TLibPassSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibPassSet(
+ byte far *pas_buf)
+@\CArguments
+byte far *pas_buf :IN
+ Password string
+@\CReturn values
+None
+@\CDescription
+Sets and changes the system password.
+@\CNote
+Puts a NULL(0x00) to the end of "pas_buf[]".
+The maximum number of characters is 16 characters.
+@\TLibPassWordCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibPassWordCheck(
+ void)
+@\CArguments
+None
+@\CReturn values
+bool Check result
+ TRUE : Password matched.
+ FALSE: Password input is aborted by ESC.
+@\CDescription
+Inputs and checks the system password.
+@\TLibPassWordEdit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPassWordEdit(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Corrects the system password.
+@\TLibPullDown
+@\CSyntax
+#include "define.h"
+#include "PullDown.h"
+word LibPullDown(
+ void)
+@\CArguments
+None
+@\CReturn values
+Selected items.
+@\CDescription
+Displays a pull-down menu and returns a selected item.
+It is absolutely necessary to call LibPullDownInit().
+@\CNote
+Among the messages given to the SYSTEM columns, "36th" is for the process name of the language setting function.
+Depending on the ROM models, there is a specification that suppresses the selection of this process.
+In that case, this function forcibly masks it.
+Therefore, the "36th" can not be used for other purposes than the process name of the language setting function.
+The ROM model can be checked internally by LibGetLangInf().
+@\TLibPullDownAtrSet
+@\CSyntax
+#include "define.h"
+#include "PullDown.h"
+int LibPullDownAtrSet(
+ int mode,
+ word type,
+ word item)
+@\CArguments
+int mode :IN
+ Attribute type
+ PULLDOWN_NONDSP No display
+ PULLDOWN_HTNDSP Dimmed (grayed) display (Reserved)
+word type :IN
+ Heading type
+ PULLDOWN_EDIT [Edit]
+ PULLDOWN_SYSTEM [System]
+ PULLDOWN_OPTION [Option]
+word item :IN
+ Specifies destination item (supports bits from LSB).
+@\CReturn values
+Normal "0" 
+Abnormal "-1"
+@\CDescription
+Sets the attribute of the pull-down menu display.
+@\TLibPullDownInit
+@\CSyntax
+#include "define.h"
+#include "PullDown.h"
+int LibPullDownInit(
+ word *edt,
+ word *sys,
+ word *opt)
+@\CArguments
+word *edt  :IN
+ [Edit] item message code array
+word *sys  :IN
+ [System] item message code array
+word *opt  :IN
+ [Option] item message code array
+@\CReturn values
+Normal "0"
+Abnormal "-1"
+@\CDescription
+Initializes the pull-down menu display.
+It is absolutely necessary to call up LibPullDown().
+The end of array must be put since it is recognized by PDNTBLEND.
+The item is allocated to bits from the lowest position during registration.
+(See LibPullDown())
+@\TLibPut35Font
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPut35Font(
+ byte code,
+ int x_pos,
+ int y_pos)
+@\CArguments
+byte code  :IN
+ Character code
+int x_pos  :IN
+ Coordinate - Horizontal
+int y_pos  :IN
+ Coordinate - Vertical
+@\CReturn values
+None
+@\CDescription
+Displays a 3 * 5 font.
+Displays a character code specified in "code" at specified coordinate.
+@\CNote
+However, only the following character codes can be used.
+If other codes are used, they are painted.
+ 0 1 2 3 4 5 6 7 8 9 A M P . , 0x20 0x2d 0x3a 0x2f 0x7e
+@\TLibPut35Str
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPut35Str(
+ int x,
+ int y,
+ byte *string)
+@\CArguments
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+byte *string :IN
+ Character string
+@\CReturn values
+None
+@\CDescription
+Displays a 3 * 5 font character string.
+@\CNote
+However, only the following character codes can be used.
+If other codes are used, they are filled.
+ 0 1 2 3 4 5 6 7 8 9 A M P . , 0x20 0x2d 0x3a 0x2f 0x7e
+@\TLibPutBoxSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibPutBoxSub(
+ int x,
+ int y,
+ int x2,
+ int y2,
+ byte type)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+int x2 :IN
+ Bottom right abscissa
+int y2 :IN
+ Bottom right ordinate
+byte type :IN
+ Drawing patterns
+ IB_GDS_OVER Overwrite
+ IB_GDS_AND Clear
+ IB_GDS_MESH Dotted line
+ IB_GDS_XOR XOR draw
+@\CReturn values
+None
+@\CDescription
+Draws a box with the option specification.
+Draws a box with a type specified in "type" at specified coordinate.
+@\TLibPutDisp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutDisp(void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Transfers VRAM data to D/D. (Entire screen)
+@\TLibPutDispBox
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutDispBox(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x :IN
+  Start coordinate - Horizontal
+int y :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Area size Width
+int ysize :IN
+ Area size Height
+@\CReturn values
+None
+@\CDescription
+Transfers VRAM data to D/D. (Area specification.)
+This is used to transfer the rectangular area with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y) to D/D.
+@\CNote
+This performs the same operation with the entire screen transfer LibPutDisp() on the simulator.
+@\TLibPutDotSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibPutDotSub(
+ int x,
+ int y,
+ byte type)
+@\CArguments
+int x :IN
+ Top left abscissa
+int y :IN
+ Top left ordinate
+byte type :IN
+ Drawing patterns
+ IB_GDS_OR Turns ON
+ IB_GDS_AND Turns OFF
+ IB_GDS_XOR XOR
+@\CReturn values
+None
+@\CDescription
+Draws a dot with the drawing pattern specification. Draws a dot with a type specified in "type" at specified coordinate.
+@\TLibPutFarData
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+void LibPutFarData(
+ int x,
+ int y,
+ int no)
+@\CArguments
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+int no :IN
+ Graphic data number
+@\CReturn values
+None
+@\CDescription
+Displays built-in graphic data.
+System built-in graphic data corresponding to a number specified by "no" is displayed.
+@\TLibPutGraph
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutGraph(
+ int x,
+ int y,
+ const byte far *graph)
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+byte far *graph :IN
+ Graphic data
+@\CReturn values
+None
+@\CDescription
+Displays graphic data.
+Displays only graphic data defined by "graph".
+@\TLibPutGraphM
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutGraphM(
+ int x,
+ int y,
+ const byte far *graph)
+@\CArguments
+int x :IN
+ Coordinate - Horizontal
+int y :IN
+ Coordinate - Vertical
+byte far *graph :IN
+ Graphic data
+@\CReturn values
+None
+@\CDescription
+Shades and displays graphic data.
+Shades and displays graphic data already defined by "graph".
+@\TLibPutGraphO
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+void LibPutGraphO(
+ int px,
+ int py,
+ byte far *ptn,
+ int mode)
+@\CArguments
+int px  :IN
+ Coordinate - Horizontal
+int py  :IN
+ Coordinate - Vertical
+byte far *ptn  :IN
+ Graphic data
+int mode  :IN
+ Write mode
+ IB_GPOVER: Overwrite
+ IB_GPOR: OR
+ IB_GPAND: AND
+ IB_GPREV: Reverse
+ IB_GPMESH: Shade
+@\CReturn values
+None
+@\CDescription
+Displays graphic data with the write mode specification.
+Displays graphic data defined by "graph" in the way corresponding to each write mode.
+@\TLibPutLineSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibPutLineSub(
+ int x,
+ int y,
+ int x2,
+ int y2,
+ byte type)
+@\CArguments
+int x :IN
+ Start point abscissa
+int y :IN
+ Start point ordinate
+int x2 :IN
+ End point abscissa
+int y2 :IN
+ End point ordinate
+byte type :IN
+ Drawing patterns
+ IB_GDS_OR Solid line
+ IB_GDS_AND Clear
+ IB_GDS_MESH Dotted line
+ IB_GDS_XOR XOR
+ IB_GDS_XOR XOR writing
+@\CReturn values
+None
+@\CDescription
+Draws a line with the drawing pattern specification.
+Draws a line with a type specified in "type" at specified coordinate.
+@\TLibPutMessage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMessage(
+ word no,
+ int p_x,
+ int p_y,
+ byte type)
+@\CArguments
+word no :IN
+ Message number
+int p_x :IN
+ Coordinate - Horizontal
+int p_y :IN
+ Coordinate - Vertical
+byte type :IN
+ Font type
+ IB_PFONT1: Data type
+ IB_PFONT2: Background type
+ IB_PFONT3: For title
+ IB_CG57FONT: 5*7
+@\CReturn values
+None
+@\CDescription
+Displays a built-in 5-language message corresponding to a number specified by "no" with a font type specified by "type" at specified coordinates.
+@\TLibPutMessageCenter
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMessageCenter(
+ word no,
+ int p_x1,
+ int p_x2,
+ int p_y,
+ byte type)
+@\CArguments
+word no :IN
+ Message number
+int p_x1 :IN
+ Left edge coordinate (start)
+int p_x2 :IN
+ Right edge coordinate (end)
+int p_y :IN
+ Ordinates
+byte type :IN
+ Font type
+ IB_PFONT1: Data type
+ IB_PFONT2: Background type
+ IB_PFONT3: For title
+ IB_CG57FONT: 5*7
+@\CReturn values
+None
+@\CDescription
+Displays a built-in 5-language message corresponding to a number specified by "no" with a font type specified by "type" at a position between two X-coordinates (p_x1, p_x2) so that it is centered.
+@\CNote
+If the length of the message string is too long to fit to the space between two X-coordinates, the message will not be displayed.
+Remember that the length of character string is changed by the language selection.
+@\TLibPutMessageCenter2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMessageCenter2(
+ word no,
+ int p_x,
+ int p_y,
+ byte type)
+@\CArguments
+word no  :IN
+ Message number
+int p_x :IN
+ Coordinate - Horizontal
+int p_y :IN
+ Coordinate - Vertical
+byte type :IN
+ Font type
+ IB_PFONT1: Data type
+ IB_PFONT2: Background type
+ IB_PFONT3: For title
+ IB_CG57FONT: 5*7
+@\CReturn values
+None
+@\CDescription
+Displays a built-in 5-language message corresponding to a number specified by "no" with a font type specified by "type" so that the coordinate position (p_x, p_y) is located at the center of the message.
+@\TLibPutMessageRight
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMessageRight(
+ word no,
+ int p_x,
+ int p_y,
+ byte type)
+@\CArguments
+word no :IN
+ Message number
+int p_x :IN
+ Coordinate - Horizontal
+int p_y :IN
+ Coordinate - Vertical
+byte type :IN
+ Font type
+ IB_PFONT1: Data type
+ IB_PFONT2: Background type
+ IB_PFONT3: For title
+ IB_CG57FONT: 5*7
+@\CReturn values
+None
+@\CDescription
+Displays a built-in 5-language message corresponding to a number specified by "no" with a font type specified by "type" so that it is right justified corresponding to the coordinates (p_x, p_y).
+@\TLibPutMsgDlg
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMsgDlg(
+ byte *format, ...)
+@\CArguments
+byte *format :IN
+ Formatted string
+@\CReturn values
+None
+@\CDescription
+Displays a string formatted in conformity with printf().
+Performs a dialog display using the characters specified by "format" based on the conversion specification of existing control character string, and waits for touching.
+The escape sequence in the window is '\r'.
+@\CNote
+This function cannot be used in other bank libraries since BSS is used.
+@\TLibPutMsgDlg2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMsgDlg2(
+ byte *format, ...)
+@\CArguments
+byte *format   :IN
+ Formatted string
+@\CReturn values
+None
+@\CDescription
+Displays a string formatted in conformity with printf().
+Performs a dialog display using the characters specified by "format" based on the conversion specification of existing control character string, and waits for 0.125 seconds before closing the dialog.
+@\TLibPutMsgDlg3
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMsgDlg3(
+ byte *format, ...)
+@\CArguments
+byte *format :IN
+ Formatted strings
+@\CReturn values
+None
+@\CDescription
+Displays a string formatted in conformity with printf().
+Performs a dialog display using the characters specified by "format" based on the conversion specification of existing control character string, and waits for about 0.5 seconds before closing the dialog.
+@\TLibPutMsgDlg4
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutMsgDlg4(
+ byte *format, ...)
+@\CArguments
+byte *format :IN
+ Formatted strings
+@\CReturn values
+None
+@\CDescription
+Displays a string formatted in conformity with printf().
+Performs a dialog display using the characters specified by "format" based on the conversion specification of existing control character string, and closes the dialog immediately.
+@\TLibPutProFont
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibPutProFont(
+ byte type,
+ byte code,
+ int x_pos,
+ int y_pos)
+@\CArguments
+byte type  :IN
+ Display font data type
+ IB_PFONT1 :Normal
+ IB_PFONT2 :Bold
+ IB_PFONT3 :For title
+ IB_CG57FONT: 5*7
+byte code  :IN
+ Character code
+int x_pos  :IN
+ Coordinate - Horizontal
+int y_pos  :IN
+ Coordinate - Vertical
+@\CReturn values
+Next abscissas
+@\CDescription
+Displays a proportional font/5*7 font.
+A character specified by the "code" and "type" (font type) is displayed.
+A horizontal coordinate calculated by adding the character size specified in "code" to the horizontal coordinate specified by "x_pos" is returned as a next display coordinate.
+@\TLibPutProStr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibPutProStr(
+ byte type,
+ int x,
+ int y,
+ byte *string,
+ int x_size)
+@\CArguments
+byte type  :IN
+ Display font data type
+ IB_PFONT1  : Normal
+ IB_PFONT2  : Bold
+ IB_PFONT3  : For title
+ IB_CG57FONT : 5*7
+int x  :IN
+ Coordinate - Horizontal
+int y  :IN
+ Coordinate - Vertical
+byte *string :IN
+ Character string
+int x_size  :IN
+ Area (Horizontal)
+@\CReturn values
+None
+@\CDescription
+Displays a proportional font character string.
+A character string specified in "string" is displayed with a font specified in "type".
+Data exceeding "x_size" is not displayed.
+@\TLibReadMessage
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibReadMessage(
+ word no,
+ byte *buf)
+@\CArguments
+word no  :IN
+ Message number
+byte *buf :OUT
+ Character string buffer
+@\CReturn values
+None
+@\CDescription
+Reads a built-in 5-language message character string corresponding to a number specified by "no" and writes it into the buffer "buf".
+@\CNote
+This function does not check if there is enough space to write the character string.
+So, it is necessary to allocate enough space to "buf".
+@\TLibRepOff
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibRepOff(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Turns off the touch repeat function.
+@\TLibReverse
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibReverse(
+ int x,
+ int y,
+ int xsize,
+ int ysize)
+@\CArguments
+int x  :IN
+ Start coordinate - Horizontal
+int y  :IN
+ Start coordinate - Vertical
+int xsize :IN
+ Reverse area Width
+int ysize :IN
+ Reverse area Height
+@\CReturn values
+None
+@\CDescription
+Reverses a rectangular area.
+This is used to reverse the area with a size specified by "xsize" and "ysize" from the start coordinate specified by (x, y).
+@\TLibSaveSysRam
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSaveSysRam(
+ void)
+@\CArguments
+None
+@\CReturn values
+FLASH BIOS status code.
+@\CDescription
+Saves all system area data for application to the FLASH memory.
+@\TLibSaveSysRamB
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSaveSysRamB(
+ void)
+@\CArguments
+None
+@\CReturn values
+FLASH BIOS status code.
+@\CDescription
+Saves all system area data for BIOS to the FLASH memory.
+@\TLibScrollArrowPrint
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibScrollArrowPrint(
+ T_SCR_POS scr,
+ byte mask)
+@\CArguments
+T_SCR_POS scr  :IN
+ Scroll bar position information
+byte mask  :IN
+ Mask information
+ SCR_NO_MASK: Displays the up and down arrows without shade.
+ SCR_UP_MASK: Shades the up arrow.
+ SCR_DWN_MASK: Shades the down arrow.
+ SCR_ALL_MASK: Shades both up and down arrows.
+@\CReturn values
+None
+@\CDescription
+Displays the up and down arrows on the scroll bar.
+This function displays the scroll bar arrows specified by "scr" according to the shading status specified by "mask".
+To make the display valid, it is necessary to execute LibPutDisp() since data is not transferred to D/D internally.
+@\CNote
+Only SCR_NO_MASK can display arrows. Others can shade the arrows already displayed.
+In addition, in LibScrollPrint(), this function is called with specifying SCR_NO_MASK.
+Therefore the shading must be performed after that.
+@\TLibScrollClick
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibScrollClick(
+ const TCHSTS *tsts,
+ T_SCR_POS *scr_pos)
+@\CArguments
+const TCHSTS *tsts :IN
+ Touch status information
+T_SCR_POS *scr_pos :IN/OUT
+ Scroll bar position information
+@\CReturn values
+Touch position
+ 0 Up arrow
+ 1 Down arrow
+ 2 Intermediate area (display may be changed)
+ 4 Scroll BOX is moving.
+ -1 Other touch area
+@\CDescription
+Controls touching of the scroll bar.
+This function determines a touch position on the scroll bar based on the touch status specified by "tsts", and returns it.
+If a portion other than the up/down arrow (display point or non-display point) is touched,
+the scroll box is moved (including D/D transfer) to calculate the logical data position on the list based on the movement amount,
+and this data is output to "scr_pos->pos".
+When up/down allow is touched, the page break may not be necessarily performed since the allocation of cursor bar movement and others can be expected.
+Therefore, the bar is not redisplayed within this function.
+@\CNote
+The scroll bar position information has to meet to the content of touch area definition.
+@\TLibScrollPrint
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibScrollPrint(
+ T_SCR_POS scr)
+@\CArguments
+T_SCR_POS scr  :IN
+ Scroll bar position information
+@\CReturn values
+None
+@\CDescription
+Displays the scroll bar.
+This function displays the scroll bar from a position specified by "scr".
+It is not necessary to execute functions, such as LibPutDisp(), since data is transferred to D/D internally.
+[Supplement] The position information of the scroll bar is as follow:
+typedef struct T_SCR_POS{
+ int x; /* Start position (X) of the bar display */
+ int y; /* Start position (Y) of the bar display */
+ int size; /* Height of the bar (vertical width)*/
+ int vol; /* Total number of records. */
+ int dsp; /* Number of display records on the screen.*/
+ int pos; /* Display start data position on the screen. */
+} T_SCR_POS;
+@\TLibScrPosCheck
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+int LibScrPosCheck(
+ TCHSTS tsts,
+ T_SCR_POS scr)
+@\CArguments
+TCHSTS tsts :IN
+ Touch status information
+T_SCR_POS scr :IN
+ Scroll bar position information
+@\CReturn values
+Touch position
+ 0 Up arrow
+ 1 Down arrow
+ 2 Intermediate area (display may be changed)
+ -1 Other touch areas
+@\CDescription
+Gets a scroll bar touch position.
+This function determines a touch position on the scroll bar based on the touch status shown in "tsts", and then returns it.
+When making the up/down arrow invalid, it is necessary to check the status using this function.
+@\TLibScrShot
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibScrShot(
+ SHOT_INF *s_inf)
+@\CArguments
+SHOT_INF *s_inf :IN/OUT
+ Image information buffer
+@\CReturn values
+bool Execution result
+ TRUE : Succeeded
+ FALSE: Failed
+@\CDescription
+Executes the screen-shot process.
+This function gets VRAM data from the image information specified by "s_inf" and transfers it to the handwriting mode started up in the dual-window.
+After completion of the handwriting mode, it returns to the caller.
+@\CNote
+"s_inf" must be a global variable pointer.
+It should not be a local variable.
+This function cannot be used during mode operation in the dual-window.
+(Because the handwriting mode is called by the dual-window.)
+@\TLibScrtJmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibScrtJmp(
+ byte m_sts,
+ word m_ofs)
+@\CArguments
+byte m_sts :IN
+ Mode status
+ 0x00: Transfer from normal state by the secret key.
+ IB_MSCRT_MOVE: Transfer from move selection.
+word m_ofs :IN
+ Data pointer
+@\CReturn values
+None
+@\CDescription
+Jumps to the intermediate state for transiting to the Secret mode.(Intermediate state = Password inputscreen)
+When specifying IB_MSCRT_MOV to "m_sts", the jump accompanies data transfer.
+@\TLibScrtModeJmp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibScrtModeJmp(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Jumps from the intermediate state of the Secret mode transition to other mode.
+@\TLibSecretCall
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSecretCall(
+ word m_seg,
+ word m_ofs)
+@\CArguments
+word m_seg :IN
+ Segment information
+word m_ofs :IN
+ Offset information
+@\CReturn values
+None
+@\CDescription
+Calls the Secret mode by the function specification.
+The function splits the area allocated as the external variable into "m_seg" and "m_ofs" and transfers them.
+@\CNote
+The function to be specified should correspond to the Secret mode.
+@\TLibSelectFont
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibSelectFont(
+ byte far *font)
+@\CArguments
+byte far *font :IN/OUT
+ Font information
+  IB_PFONT1
+  IB_PFONT2
+@\CReturn values
+bool Changed/Not Changed
+ TRUE : Changed.
+ FALSE: Not changed.
+@\CDescription
+Displays the selection window to change the display font.
+Selects a font from two font types in the window, and the function returns TRUE if the selection is changed.
+@\TLibSelWindow
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWindow(
+ int x,
+ int y,
+ int xs,
+ byte ln,
+ byte np,
+ SLW_TBL *ktb)
+@\CArguments
+int x :IN
+ Window top coordinate - Horizontal
+int y :IN
+ Window top coordinate - Vertical
+int xs :IN
+ <Unused>
+byte ln :IN
+ Number of lists 1-
+byte np :IN
+ Default reverse position (0-)
+SLW_TBL *ktb :IN
+ Message/return value table
+  ktb[].msg: Message number
+  ktb[].rtv: Return values
+@\CReturn values
+byte Return value corresponding to the selected position.
+ ktb[Selected position].rtv
+@\CDescription
+Displays a selection window to wait for touching, and returns the selected number.
+This function displays a window from the start coordinates specified by x and y, reads the specified number of messages by "ln" from "ktb[]", and then displays them.
+The position of the reverse bar immediately after messages are displayed is specified by "np".
+If "0xff" is specified, the bar is not displayed for the first time.
+@\CNote
+The number of "ktb[]" elements should not exceed "ln".
+[Supplement] "xs" was the argument for the window size.
+However, the current function can calculate the size of the message width internally so that the message with the maximum width can fit to the window.
+So, this argument is no longer used.
+@\TLibSelWindow2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWindow2(
+ int y,
+ byte ln,
+ SLW_TBL *ktb,
+ word msk)
+@\CArguments
+int y :IN
+ Window top coordinate - Vertical
+byte ln :IN
+ Number of lists (ecxluding title line) 1 -
+SLW_TBL *ktb :IN
+ Message/return value table
+  ktb[].msg: Message number
+  ktb[].rtv: Return values
+word msk :IN
+ Display item mask information
+  When displaying all items: 0x0000
+  When not displaying the first line: Turn on a bit of 0x0001.
+  When not displaying the second line: Turn on a bit of 0x0002.
+  When not displaying the third line: Turn on a bit of 0x0004.
+   :
+   :
+  When not displaying the 15th line: Turn on a bit of 0x8000.
+@\CReturn values
+byte Return value corresponding to the selected position.
+ ktb[Selected position].rtv
+@\CDescription
+Selects a window with the title line. Uses for the deletion menu, etc.
+Displays the selection window to wait for touching, and returns the selected number.
+Displays a window in the center of the screen from the ordinate specified by "y", reads the specified number of messages by "ln" from "ktb[]", and then displays them.
+ktb[0] is the title line.
+[Supplement] When using this function for the deletion menu, set "28" to "y". (Standard specification as of July 2,
+1998.)
+@\CNote
+Both the title line and the list data are controlled by "ktb[]".
+However, be sure that the numeric number excluding the title line should be set to "ln" as the number of lists.
+@\TLibSelWindowExt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWindowExt(
+ SLW2_ST *slw)
+@\CArguments
+SLW2_ST *slw  : IN
+ Selection window information
+@\CReturn values
+Return value corresponding to the selected position.
+Table elements specified by "slw->rtv".
+@\CDescription
+Performs the selection window processing.
+This is a character string transfer version of LibSelWindow().
+This function displays the selection window to wait for touching, and returns the selected number.
+The function displays a window with a size specified by "xs" from the start coordinates specified by x and y, reads messages from "slw->cmnt", and displays them.
+The position of the reverse bar immediately after messages are displayed is specified by "np".
+If "0xff" is specified, the bar is not displayed for the first time.
+
+Selection window information
+ slw->x : Start coordinate of the window. Horizontal
+ slw->y : Start coordinate of the window. Vertical
+ slw->xs : Horizontal size of the window.
+ slw->ity : Line spacing of message list (9 -)
+ slw->np : Default position of the highlighted cursor ( no first time display with "0xff").
+ slw->cmnt : Display message buffer (separated by "0xfe", ended by "0xff").
+ slw->rtv : Return value relevant to the selected message.
+ slw->t_xs : Message display start position in the window.
+@\TLibSelWinExt2A
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWinExt2A(
+ SLW2_ST *slw)
+@\CArguments
+SLW2_ST *slw :IN
+ Selection window information
+@\CReturn values
+byte Number of lists in the window.
+@\CDescription
+Displays a window by the message list. (The character string transfer.)
+Displays the message list from the contents specified by "slw[]" This function does not include the touch waiting as it is different from LibSelWindowExt() and so on.
+Therefore, after performing the message list display by this function, any effects can be made in the window.
+@\CNote
+No touch waiting is supported.
+So, this function needs to be paired with LibSelWinExt2B() when using.
+@\TLibSelWinExt2B
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWinExt2B(
+ SLW2_ST *slw,
+ byte ln)
+@\CArguments
+SLW2_ST *slw : IN
+ Selection window information
+byte ln : IN
+ Number of lists (1-)
+@\CReturn values
+byte Return value corresponding to the selected position.
+ ktb[Selected position].rtv
+@\CDescription
+Waits for touching of the message list based on the contents specified by "slw[]".
+@\CNote
+No display processing is supported.
+So, this function needs to be paired with LibSelWinExt2A() when using.
+@\TLibSelWinLckA
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibSelWinLckA(
+ int x,
+ int y,
+ int ity,
+ int xs,
+ byte ln,
+ SLW_TBL *ktb)
+@\CArguments
+int x :IN
+ Window display start coordinate (X)
+int y :IN
+ Window display start coordinate (Y)
+int ity :IN
+ Display line spacing dot numbers (9 or 10)
+int xs :IN
+ Window display width (X size)
+byte ln :IN
+ Display item line numbers in window (1, 2, 3, ...).
+SLW_TBL *ktb :IN
+ Message/return value table
+  ktb[].msg: Message number
+  ktb[].rtv: Return values
+@\CReturn values
+None
+@\CDescription
+Processes the fixed message window display.
+@\CNote
+No display process is supported.
+So, this function needs to be paired with LibSelWinLckB() when using.
+@\TLibSelWinLckB
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSelWinLckB(
+ int x,
+ int y,
+ int ity,
+ int xs,
+ byte ln,
+ byte np,
+ SLW_TBL *ktb)
+@\CArguments
+int x :IN
+ Window display start coordinate (X)
+int y :IN
+ Window display start coordinate (Y)
+int ity :IN
+ Display line spacing dot numbers (9 or 10)
+int xs :IN
+ Window display width (X size)
+byte ln :IN
+ Display item line numbers in window (1, 2, 3, ...).
+byte np :IN
+ Reversed cursor default position in window (0, 1, 2, ...).
+ (No default reverse with 0xff.)
+SLW_TBL *ktb :IN
+ Message/return value table
+  ktb[].msg: Message number
+  ktb[].rtv: Return values
+@\CReturn values
+byte Return value corresponding to the selected position
+ ktb[Selected position].rtv
+@\CDescription
+Waits for touching of the message list specified by "ktb[]".
+@\CNote
+No display process is supported.
+So, this function needs to be paired with LibSelWinLckA() when using.
+@\TLibSetAPOTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetAPOTime(
+ word msec)
+@\CArguments
+word msec :IN
+ APO time (500-ms units)
+@\CReturn values
+None
+@\CDescription
+Sets the APO time.
+Automatically sets the APO time to 6 minutes if attempting to set an illegal value.
+@\TLibSetDailyAlarm
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+int LibSetDailyAlarm(
+ char *tbp)
+@\CArguments
+char *tbp :IN
+ Time buffer
+@\CReturn values
+Execution result
+ TRUE : Normal end
+ FALSE: Abnormal end (The value set exceeds the input range.)
+@\CDescription
+Sets the daily alarm time.
+@\TLibSetDate2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetDate2(
+ word year2,
+ byte month2,
+ byte day2)
+@\CArguments
+word year2 :IN
+ Year
+byte month2 :IN
+ Month
+byte day2 :IN
+ Day
+All in numeric format.
+@\CReturn values
+None
+@\CDescription
+Updates the current date.
+@\CNote
+Be sure to specify the value without the summer time correction.
+@\TLibSetDateTime
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibSetDateTime(
+ byte yearh,
+ byte yearl,
+ byte month,
+ byte day,
+ byte hour,
+ byte minute)
+@\CArguments
+byte yearh :IN
+ Year high
+byte yearl :IN
+ Year low
+byte month :IN
+ Month
+byte day :IN
+ Day
+byte hour :IN
+ Hour
+byte minute :IN
+ Minute
+All in BCD format
+@\CReturn values
+None
+@\CDescription
+Updates the current date and time.
+@\CNote
+Be sure to specify the value with the summer time correction.
+@\TLibSetDateTime2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetDateTime2(
+ word year2,
+ byte month2,
+ byte day2,
+ byte hour2,
+ byte minute2)
+@\CArguments
+word year2 :IN
+ Year
+byte month2 :IN
+ Month
+byte day2 :IN
+ Day
+byte hour2 :IN
+ Hour
+byte minute2 :IN
+ Minute
+All in numeric format.
+@\CReturn values
+None
+@\CDescription
+Updates the current date and time.
+@\CNote
+Be sure to specify the value with the summer time correction.
+@\TLibSetDispMode
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibSetDispMode(
+ bool flag)
+@\CArguments
+bool flag   :IN
+ Write mode
+ FALSE: Not transfer to D/D.
+ TRUE : Transfer to D/D
+@\CReturn values
+None
+@\CDescription
+Sets the write mode to D/D.
+The real time transfer is performed when setting this to TRUE.
+That is, this function makes it possible to display a drawing content instantaneously without executing LibPutDisp().
+The initial value is FALSE.
+@\CNote
+The performance of the complete display is down when this is set to TRUE.
+Therefore, it is recommended to limit a use of this function.
+@\TLibSetKeyKind
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetKeyKind(
+ byte type)
+@\CArguments
+byte type :IN
+ Keyboard layout type
+ IB_QWERTY: QWERTY layout
+ IB_AZERTY: AZERTY layout
+ IB_QWERTZ: QWERTZ layout
+@\CReturn values
+None
+@\CDescription
+Sets the keyboard layout type.
+@\CNote
+The keyboard layout information can be set/changed not only by this function but also by the language setting LibSetLang().
+When the language setting LibSetLang() is executed, the keyboard layout information is automatically changed to the appropriate initial value.
+ English: QWERTY layout
+ French : AZERTY layout
+ German : QWERTZ layout
+ Italian: QWERTY layout
+ Spanish: QWERTY layout
+@\TLibSetLang
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetLang(
+ byte lang)
+@\CArguments
+byte lang  :IN
+ Language information
+ IB_DEUTSCH: German
+ IB_ENGLISH: English
+ IB_ESPANOL: Spanish
+ IB_FRANCAIS: French
+ IB_ITALIANO: Italian
+@\CReturn values
+None
+@\CDescription
+Sets and changes the system language information.
+[Supplement] When the language information is changed, at the same time the keyboard layout information is also updated.
+The keyboard layout information can also be changed using LibSetKeyKind().
+However, when the language is changed, the appropriate initial value is used instead.
+ English: QWERTY layout
+ French : AZERTY layout
+ German : QWERTZ layout
+ Italian: QWERTY layout
+ Spanish: QWERTY layout
+@\TLibSetTime2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSetTime2(
+ byte hour2,
+ byte minute2)
+@\CArguments
+byte hour2 :IN
+ Hour
+byte minute2 :IN
+ Minute
+All in numeric format.
+@\CReturn values
+None
+@\CDescription
+Updates the current time.
+@\CNote
+Be sure to specify the value without the summer time correction.
+@\TLibSKeyIsCd
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+bool LibSKeyIsCd(
+ TCHTBL far *sk_tbl,
+ word obj_cd)
+@\CArguments
+TCHTBL far *sk_tbl :IN
+ Information for touch table
+word obj_cd :IN
+ Object code
+@\CReturn values
+Inspection result
+ TRUE : Present
+ FALSE: None
+@\CDescription
+Checks whether the object code exists.
+Checks if the object code indicated by "obj_cd" is included in the touch table "sk_tbl".
+@\TLibSKeyRev
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSKeyRev(
+ TCHTBL far *sk_tbl,
+ word obj_cd,byte sw)
+@\CArguments
+TCHTBL far *sk_tbl :IN
+ Information for touch table
+word obj_cd :IN
+ Object code
+byte sw :IN
+ Key action ON: Down (Pressed) state
+ OFF: Up state.
+@\CReturn values
+None
+@\CDescription
+Provides the pressed appearance to the software keyboard.
+Checks if the object code indicated by "obj_cd" is included in the touch table "sk_tbl", and represents a matched coordinate position.
+@\CNote
+In order to provide fast processing, the boundary scan is not performed. Therefore, "obj_cd" has to be included in "sk_tbl[]".
+@\TLibSKeyRevSub
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSKeyRevSub(
+ int x,
+ int y,
+ int x2,
+ int y2,
+ byte rev,
+ byte type)
+@\CArguments
+int x  :IN
+ Top left abscissa
+int y  :IN
+ Top left ordinate
+int x2  :IN
+ Bottom right abscissa
+int y2  :IN
+ Bottom right ordinate
+byte rev  :IN
+ Highlighted (reverse) pattern
+ IB_GDS_KEYREV: Highlighted (reverse) rectangle.
+ IB_GDS_KEYREVR: Undo reverses a rectangular.
+byte type  :IN
+ Patterns for format
+ IB_GDS_KREVP1: Pattern 1, normal reverse
+ IB_GDS_KREVP2: Pattern 2, bottom right shadow
+ IB_GDS_KREVP3: Pattern 3, border & bottom right shadow
+ IB_GDS_KREVP4: Pattern 4, border
+@\CReturn values
+None
+@\CDescription
+Provides the reverse appearance to the rectangular area.
+This function performs data transfer to D/D.
+Therefore, it is not necessary to issue LibPutDisp().
+@\TLibSoundGet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+byte LibSoundGet(
+ void)
+@\CArguments
+None
+@\CReturn values
+byte Sound information (various ON information)
+ IX_DAYLY_ALM: Daily alarm
+ IX_DATA_ALM: Data alarm
+ IX_KEY_SOUND: Key sound
+@\CDescription
+Gets the current sound information of the system.
+@\TLibSoundSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibSoundSet(
+ byte opt)
+@\CArguments
+byte opt :IN
+ Sound information (bit specification)
+ IX_DAYLY_ALM: Daily alarm
+ IX_DATA_ALM: Data alarm
+ IX_KEY_SOUND: Key sound
+@\CReturn values
+None
+@\CDescription
+Sets and changes the system sound information.
+@\TLibSrl232CStat
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+byte LibSrl232CStat(
+ void)
+@\CArguments
+None
+@\CReturn values
+byte flag
+ IX_SRL_ER : ER
+ IX_SRL_RS : RS
+ IX_SRL_CS : CS
+ IX_SRL_CD : CD
+ IX_SRL_DR : DR
+@\CDescription
+Gets status of RS232C signal line.
+@\TLibSrlGetDteStat
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlGetDteStat(
+ word *num,
+ word *flag)
+@\CArguments
+word *num  :OUT
+ Number of data in receiving buffer
+word *flag  :OUT
+ Status flags
+ IX_SRL_OV  Buffer over flow
+ IX_SRL_CB  DCE busy
+ IX_SRL_TB  DTE busy
+ IX_SRL_OE  Over run error
+ IX_SRL_PE  Parity error
+ IX_SRL_FE  Framing error
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_RCVERR: Receive error
+@\CDescription
+Gets DTE status.
+@\TLibSrlGetOpenStat
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlGetOpenStat(
+ void)
+@\CArguments
+None
+@\CReturn values
+word open_stat
+ IB_NO_OPEN : No open
+ IB_COM2_OPEN : 9pin serial open
+@\CDescription
+Gets the open condition of the communication port.
+@\TLibSrlPortClose
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlPortClose(
+ void)
+@\CArguments
+None
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_CLSERR: Not Closesed
+@\CDescription
+It closes the communication port.
+The error occurs when data remains in the transmission buffer or the transmission register.
+@\TLibSrlPortFClose
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlPortFClose(
+ void)
+@\CArguments
+None
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+@\CDescription
+It closes a communication port compulsorily.
+It closes even if data remains in the transmission register or in the transmission buffer.
+At this time, a transmission buffer is cleared and the last sending character has the possibility of the mis-conversion.
+Because it closes regardless of the communication condition, generally, use "LibSrlPortClose".
+@\TLibSrlPortOpen
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlPortOpen(
+ SRL_STAT *po)
+@\CArguments
+SRL_STAT *po :IN
+ Pointer of serial communication status
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_PRMERR: Parameter error
+@\CDescription
+It opens the communication port ,and enables the sending and the receiving.
+The communication status is following structure.
+ typedef struct SRL_STAT {
+  byte port;  /* Port number */
+  byte speed;  /* BPS */
+  byte parit;  /* Parity bit */
+  byte datab;  /* Data bit length */
+  byte stopb;  /* Stop bit length */
+  byte fctrl;  /* Flow control */
+ } SRL_STAT;
+<Port number>
+IB_SRL_COM2 : 9 pin serial
+<BPS>
+IB_SRL_300BPS : 300 bps
+IB_SRL_600BPS : 600 bps
+IB_SRL_1200BPS : 1200 bps
+IB_SRL_2400BPS : 2400 bps
+IB_SRL_4800BPS : 4800 bps
+IB_SRL_9600BPS : 9600 bps
+IB_SRL_19200BPS : 19200 bps
+IB_SRL_38400BPS : 38400 bps
+IB_SRL_57600BPS : 57600 bps
+<Parity bit>
+IX_SRL_NONE : NONE parity
+IX_SRL_ODD : ODD parity
+IX_SRL_EVEN : EVEN parity
+<Data bit length>
+IX_SRL_7DATA : 7 bits length
+IX_SRL_8DATA : 8 bits length
+<Stop bit length >
+IX_SRL_1STOP : 1 stop bit
+IX_SRL_2STOP : 2 stop bit
+<Flow control>
+IX_SRL_NOFLOW  : No control
+IX_SRL_RSCS  : RS/CS control
+IX_SRL_XONOFF  : XON/XOFF & RS/CS control
+IX_SRL_XONOFFONLY : XON/XOFF control
+@\TLibSrlPreRead
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlPreRead(
+ word oft,
+ byte *data)
+@\CArguments
+word oft  :IN
+ Buffer offset
+byte *data  :OUT
+ Read data
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_NODATA: No receive data
+@\CDescription
+Gets one data in receiving buffer (no pointer update).
+Please adjust "oft" to one when you read the next data.
+@\TLibSrlRateSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlRateSet(
+ byte speed)
+@\CArguments
+byte speed  :IN
+ BPS
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_PRMERR: Parameter error
+@\CDescription
+Changes communication speed of DTE.
+@\TLibSrlRecvBlock
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlRecvBlock(
+ byte *data,
+ word size,
+ word *num)
+@\CArguments
+byte *data  :OUT
+ Pointer of storage buffer
+word size  :IN
+ Buffer size (size > 0)
+word *num  :OUT
+ Number of stored data
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_NODATA: No data error
+@\CDescription
+It reads a block data from the receiving buffer.
+@\TLibSrlRecvByte
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlRecvByte(
+ byte *data)
+@\CArguments
+byte *data  :IN
+ Receive data
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_NODATA: No receive data
+@\CDescription
+Gets one data in receiving buffer.
+@\TLibSrlRxBufClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlRxBufClr(
+ void)
+@\CArguments
+None
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+@\CDescription
+It clears a receiving buffer.
+@\TLibSrlSendBlock
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlSendBlock(
+ byte *data,
+ word size)
+@\CArguments
+byte *data  :IN
+ Pointer of buffer which stored sending data
+word size  :IN
+ Sending size(0 < size < 255 byte)
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_TRSERR: Empty lack of sending buffer
+@\CDescription
+Sends a block data.
+"IW_SRL_TRSERR" occurs when specified data isn't stored in the sending buffer.
+Therefore, you must wait until being possible to transmit or transmit data by dividing.
+@\TLibSrlSendBreak
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlSendBreak(
+ byte time)
+@\CArguments
+byte time  :IN
+ Signal length(1=100ms)
+ "time" from 1 to 9
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_PRMERR: Parameter error
+@\CDescription
+The break signal is sent during the specified time.
+The break signal is inserted between data and data when there is transmission data.
+@\TLibSrlSendByte
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlSendByte(
+ byte tmode,
+ byte data)
+@\CArguments
+byte tmode  :IN
+ Sending mode
+ IB_FOLLOW_BUSY
+ IB_IGNORE_BUSY
+byte data  :IN
+ Sending data
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+ IW_SRL_TRSERR: Sending not possible
+@\CDescription
+Sends one data.
+When "IW_IGNORE_BUSY" is specified, data is written directly into the transmission register.
+Please specify "IB_FOLLOW_BUSY" usually.
+@\TLibSrlTxBufClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibSrlTxBufClr(
+ void)
+@\CArguments
+None
+@\CReturn values
+word err_code
+ IW_SRL_NOERR : No error
+@\CDescription
+It clears a sending buffer.
+@\TLibStoNum
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibSToNum(
+ byte *buff,
+ word *res_num,
+ byte j )
+@\CArguments
+byte *buff :IN
+ Convert a string
+word *res_num :OUT
+ Convert to a number
+byte j  :IN
+ Digit
+@\CReturn values
+None
+@\CDescription
+Converts a character string specified by "buff" into numeric number.
+@\TLibStringDsp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibStringDsp(
+ byte *strg,
+ word xps,
+ word yps,
+ word lmtx,
+ byte font)
+@\CArguments
+byte *strg :IN
+ Character string buffer
+word xps :IN
+ Display start position - Horizontal
+word yps :IN
+ Display start position - Vertical
+word lmtx :IN
+ Display end position - Horizontal
+byte font :IN
+ Font type
+@\CReturn values
+None
+@\CDescription
+Displays a character string specified in "strg[]" at specified coordinates.
+If a character string exceeds the end coordinate, "c" is put at the end of the character string displayed.
+This function is used to display a character string meeting the common specification, such as displaying of lists.
+@\TLibSubEntryDel
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibSubEntryDel(
+ byte *name_str,
+ byte *sub_entry)
+@\CArguments
+byte *name_str  :IN
+ Pointer of deleting file name
+byte *sub_entry :OUT
+ Deleted Sub-Entry number
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+It deletes the registered file name, and deletes all data related to Sub-Entry.
+The data which was registered using the "Sub-Entry" number is deleted.
+The state is output to "SubEntryStat". "SubEntryStat" is global variables.
+"sub_entry" is undecided when the return value is a error.
+@\TLibSubEntryRename
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibSubEntryRename(
+ byte *old_name,
+ byte *new_name,
+ byte *sub_entry)
+@\CArguments
+byte *old_name  :IN
+ Pointer of old file name
+byte *new_name  :IN
+ Pointer of new file name
+byte *sub_entry :OUT
+ Renamed Sub-Entry number
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+It renames a registered file name.
+The state is output to "SubEntryStat".
+"SubEntryStat" is global variables.
+"sub_entry" is undecided when the return value is a error.
+@\TLibSubEntrySave
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibSubEntrySave(
+ byte *name_str,
+ byte *sub_entry)
+@\CArguments
+byte *name_str  :IN
+ Pointer of registration file name
+byte *sub_entry :OUT
+ Sub-Entry number of registered file name
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+Registration of the data file name.
+The state is output to "SubEntryStat".
+"SubEntryStat" is global variables.
+"sub_entry" is undecided when the return value is a error.
+When generating a file in the "Addin" program, write a generated file name with the document and so on.
+@\CNote
+[Registration form of data file name]
+ Format is 15bytes character string and 00h.
+  | character string(MAX15byte) | + | 00h |
+[About "SubEntryStat"]
+ The following status code is output to "SubEntryStat".
+  IB_SERR_RNEW  :New registration (Success)
+  IB_SERR_RALDY :Already registration (Success)
+  IB_SERR_FOPEN :Illegal file name (Error)
+  IB_SERR_NOSUBC:No Sub-Entry (Error)
+  IB_SERR_NGSUBC:Sub-Entry number is outside of the range (Error)
+  IB_SERR_ALDYFL:Already used file name (Error)
+  IB_SERR_NOFILE:The file name is not registered (Error)
+  IB_SERR_INJUST:Illegal input condition (Error)
+@\TLibSubEntrySearch
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibSubEntrySearch(
+ byte *name_str,
+ byte *sub_entry)
+@\CArguments
+byte *name_str  :IN
+ Pointer of search file name
+byte *sub_entry :OUT
+ Corresponded Sub-Entry number
+@\CReturn values
+bool Results
+ TRUE : Success
+ FALSE: Error
+@\CDescription
+Gets Sub-Entry number from the registered file name.
+The state is output to "SubEntryStat".
+"SubEntryStat" is global variables.
+"sub_entry" is undecided when the return value is a error.
+@\TLibTchHardIcon
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibTchHardIcon(
+ TCHSTS *tsts,byte opt)
+@\CArguments
+TCHSTS *tsts :IN
+ Touch status information
+byte opt :IN
+ Handwriting mode call option
+ 0: Call
+ 1: No Call
+@\CReturn values
+None
+@\CDescription
+Controls touching of the hardware icon.
+This can be called during common wait for touching.
+@\TLibTchInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTchInit(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Initializes the touch information.
+@\TLibTchStackClr
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTchStackClr(
+ void)
+@\CArguments
+None
+@\CReturn values
+None
+@\CDescription
+Clears the stack contents of the touch information table.
+This function discards all of the touch information registered (stacked) by "LibTchStackPush()".
+@\TLibTchStackPop
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+TCHTBL far *LibTchStackPop(
+ void)
+@\CArguments
+None
+@\CReturn values
+Result
+ NULL : Stack under flow
+ Non-NULL : Touch information table address
+@\CDescription
+Gets the touch information table registered last (discards).
+This function pops up the touch information table stacked by "LibTchStackPush()" and returns that address.
+@\TLibTchStackPush
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibTchStackPush(
+ TCHTBL far *tbl)
+@\CArguments
+TCHTBL far *tbl :IN
+ Touch information table
+@\CReturn values
+Result
+ FALSE: Stack over flow
+ TRUE : Normal
+@\CDescription
+Registers the touch information table.
+This function stacks the touch information table address specified by "tbl".
+If it is successful, the function returns TRUE.
+@\CNote
+Insert the termination identification data to the end of the touch information table.
+It is recommended to register "0" as the argument before registering the first table in order to avoid malfunctions.
+@\TLibTchWait
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTchWait(
+ TCHSTS *tsts)
+@\CArguments
+const TCHSTS *tsts :OUT
+ Touch status information
+@\CReturn values
+None
+@\CDescription
+Gets the touch information table.
+This function always monitors the pen-touch.
+If a touch occurs, the function updates the status information of "tsts".
+An effective touch area is specified by "LibTchStackPush()".
+The touch table which is prepared at the library.
+ TchHardIcon :for HardIcon
+ TchActionKey:for ActionControl key
+ TchAllDsp :for AllDisplay
+@\CNote
+Waits until the valid action occurs.
+@\TLibTelPtCnvrt
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+word LibTelPtCnvrt(
+ word fp)
+@\CArguments
+word fp :IN
+ Company data pointer
+@\CReturn values
+word Personal data pointer
+@\CDescription
+Converts the Company data pointer in the Contacts mode specified by "fp" to the Personal data pointer, and returns the data.
+@\TLibTodoFileRemove
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTodoFileRemove(
+ FILE_BUF *fd)
+@\CArguments
+FILE_BUF *fd :IN
+ File buffer
+@\CReturn values
+None
+@\CDescription
+Deletes TODO data in the Schedule mode.
+@\TLibTxtDsp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibTxtDsp(
+ TXTP *tp)
+@\CArguments
+TXTP  *tp :IN/OUT
+ Text input information
+@\CReturn values
+Screen update status.
+ TRUE : Present
+ FALSE: None
+@\CDescription
+Updates the display contents during text input. 
+This function also displays the software keyboard in addition to display of characters already input.
+@\TLibTxtDspC
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibTxtDspC(
+ TXTP *tp)
+@\CArguments
+TXTP *tp :IN/OUT
+ Text input information
+@\CReturn values
+Screen update status.
+ TRUE : Present
+ FALSE: None
+@\CDescription
+Updates the display contents during data display.
+@\TLibTxtDspInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtDspInit(
+ TXTP *tp)
+@\CArguments
+TXTP *tp :IN/OUT
+ Text input information
+@\CReturn values
+None
+@\CDescription
+Initializes various variables for data display.
+@\TLibTxtDspS
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtDspS(
+ TXTP *tp,
+ TCHSTS *tsts)
+@\CArguments
+TXTP *tp :IN/OUT
+ Text input information
+TCHSTS *tsts :OUT
+ Touch status information
+@\CReturn values
+None
+@\CDescription
+Controls events during data display.
+@\TLibTxtInit
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtInit(TXTP *tp)
+@\CArguments
+TXTP *tp :IN/OUT
+ Text input information
+@\CReturn values
+None
+@\CDescription
+Initializes various variables for text input.
+@\TLibTxtInp
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtInp(
+ byte keycd,
+ TCHSTS *tsts,
+ TXTP *tp)
+@\CArguments
+byte keycd :IN
+ Character code (a value from keyboard)
+TCHSTS *tsts :OUT
+ Touch status information
+TXTP *tp :IN/OUT
+ Text input information
+@\CReturn values
+None
+@\CDescription
+Controls the text input.
+This function uses the internal touch waiting to perform the character input process by software keyboard and performs the drag selection process.
+@\TLibTxtKeyWordSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtKeyWordSet(
+ TXTP *tp)
+@\CArguments
+TXTP *tp :IN/OUT
+ Text input information
+@\CReturn values
+None
+@\CDescription
+Performs the keyword registration for text input.
+This function is the internal processing of the character input library.
+However, this function is executed to register the word handled last as the keyword when ending the input process by pressing the SET or ESC button.
+@\TLibTxtTchSet
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibTxtTchSet(
+ TXTP *tp)
+@\CArguments
+TCHSTS *tsts  :IN
+ Touch status information
+@\CReturn values
+None
+@\CDescription
+Registers the touch table for text input.
+This function is used in the preparation phase for text input.
+@\TLibWait
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+void LibWait(
+ byte time)
+@\CArguments
+byte time :IN
+ Wait time
+ IB_125MWAIT: 125 msec.
+ IB_250MWAIT: 250 msec.
+ IB_500MWAIT: 500 msec.
+ IB_1SWAIT: 1 sec.
+@\CReturn values
+None
+@\CDescription
+Makes the dummy wait for the specified period of time.
+@\TLibWinIcnMsg
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+bool LibWinIcnMsg(
+ byte icn,
+ word msg,
+ byte wtyp)
+@\CArguments
+byte  icn :IN
+ Icon type
+  ICON_NONE: None
+  ICON_OK: OK
+  ICON_BADTZ: X
+  ICON_BIKKURI: !
+  ICON_COFFEE: Coffee
+  ICON_TRASH: Trash box
+  ICON_SIGN: Hand
+  ICON_SYNC: Communicating
+word  msg :IN
+ Message number
+byte  wtyp :IN
+ Message display type
+ Value Status Button Position
+ 0x00 Kept opened. None Middle
+ 0x10 Kept opened. None Bottom
+ 0x01 Closed after 1 sec. None Middle
+ 0x11 Closed after 1 sec. None Bottom
+ 0x02 Check OK Bottom
+ 0x03 Check ESC Bottom
+ 0x04 Check SET Bottom
+ 0x05 Selection Yes/No Bottom
+ 0x06 Selection OK/ESC Bottom
+@\CReturn values
+bool Touch result wtyp is 5, 6.
+ TRUE : Left button. (YES)
+ FALSE: Right button. (NO)
+@\CDescription
+Displays the general-purpose message window.
+This function displays a built-in 5-language message or graphic data with specified icon type and performs the several display functions specified by "wtyp".
+@\TLibAdjustTimeDeff2
+@\CSyntax
+#include "define.h"
+#include "libc.h"
+#include "l_define.h"
+#include "l_libc.h"
+void LibAdjustTimeDeff2(
+ int lag,
+ word *year2,
+ byte *month2,
+ byte *day2,
+ byte *dweek2,
+ byte *hour2,
+ byte *minute2,
+ byte *second2 )
+@\CArguments
+int lag :IN
+ Time lag correction
+word *year2 :OUT
+ Year
+byte *month2 :OUT
+ Month
+byte *day2 :OUT
+ Day
+byte *dweek2 :OUT
+ Week
+byte *hour2 :OUT
+ Hour
+byte *minute2 :OUT
+ Minute
+byte *second2 :OUT
+ Second
+@\CReturn values
+None
+@\CDescription
+Corrects a date/time with the time lag specified by "lag".
+@\T

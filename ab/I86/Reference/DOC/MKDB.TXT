@@ -1,0 +1,43 @@
+<Database Conversion Tool>
+
+1. Outline
+
+This is a tool to convert a TEXT file (a file which the database is based on) which is created in accordance
+ with the format of "DataFormatV100.TXT" into database which a PV's Add-in software "Referencer" can use.
+
+2. Usage
+
+	1) Start MKDB.EXE.
+	2) Click [OPEN] and select a TEXT file to convert.
+	3) Click [OK] in the message window "Conversion start?" to start the conversion.
+	4) The message window "Complete!!" is displayed when the conversion is completed successfully.
+	5) Click [OK] to close the message window.
+	6) Click [EXIT] to exit the program.
+
+3. Notes
+
+	1) In the file after conversion, the name of the file will be the original file name with ".DIC" extension.
+	2) Likewise, the error messages during conversion is recorded in a log file with the original file name plus ".LOG" extension. 
+	3) If files with the same file name as a file after conversion and a log file during conversion exist, the files will be overwritten.
+	4) When an error occurs, examine and modify the format which caused the error.
+	5) If the files are ".DIC" files, it cannot be registered to PV by using "PVM.EXE". Refer to Supplementary Information below for details.
+
+4. Supplementary Information
+
+* Procedure for using the files in PV
+	1) Register the add-in software "datarec.bin" to PV by using "PVM.EXE".
+	   (Refer to "PVM_EN.PDF" for usage of PVM.)
+	2) When registered, exit "PVM.EXE".
+	3) Register ".DIC" file to PV by using "PVSENDER.EXE".
+	    On PV side, start "Data-Recorder" from a menu.
+	   (Refer to "PVSENDER.PDF" for registration method.)
+	4) When registered, exit "PVSENDER.EXE".
+	5) Start "PVM.EXE" again and perform a backup of the ".DIC" data files registered to PV.
+	    Note: The file name of ".DIC" file in PV (the name displayed in the column "DataList" in PVM) is the one used for transferring by "PVSENDER.EXE".
+	6) Change the extension of the data files backed up to ".ADT".
+
+	<IMPORTANT>
+	This backup data ".ADT" will be the files to be distributed.
+	Once the file with ".ADT" is created, the steps 1) through 6) are unnecessary unless there is change in the database.
+	When registering the database to PV, use this ".ADT" file by using "PVM.EXE".
+	In addition, to refer to the database, it is necessary to register the add-in software "Referencer.bin" to PV at the same time.
